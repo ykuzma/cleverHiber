@@ -1,10 +1,13 @@
 package by.kuzma.clever.hiber.entity;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -14,18 +17,24 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "categories")
+@Table(name = "review")
 @Getter
 @Setter
-public class Category {
-
+public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "content")
+    private String content;
 
-    @OneToMany(mappedBy = "category")
-    private List<Car> cars;
+    @Column(name = "rank")
+    private double rank;
+
+    @ManyToOne
+    private Client client;
+
+    @ManyToOne
+    private Car car;
+
 }

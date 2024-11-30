@@ -1,6 +1,7 @@
 package by.kuzma.clever.hiber.service;
 
 import by.kuzma.clever.hiber.entity.Car;
+import by.kuzma.clever.hiber.repository.CarRepository;
 
 import java.util.List;
 import java.util.UUID;
@@ -27,7 +28,8 @@ public class CarServiceImpl implements CarService {
     @Override
     public Car addCar(Car car) {
 
-        return null;
+
+        return repository.save(car);
     }
 
     @Override

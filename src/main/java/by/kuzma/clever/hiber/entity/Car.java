@@ -1,5 +1,6 @@
 package by.kuzma.clever.hiber.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,6 +11,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.UUID;
 
@@ -17,6 +19,7 @@ import java.util.UUID;
 @Table(name = "cars")
 @Getter
 @Setter
+@ToString
 public class Car {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -31,7 +34,7 @@ public class Car {
     private int yearOfProduction;
     @Column(name = "price")
     private double price;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "category_id")
     private Category category;
 

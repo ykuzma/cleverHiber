@@ -23,7 +23,7 @@ dependencies {
 
     implementation 'org.postgresql:postgresql'
 
-    testImplementation 'org.jeasy:easy-random-core:5.0.0'
+    implementation 'org.jeasy:easy-random-core:5.0.0'
 
     compileOnly 'org.projectlombok:lombok'
     implementation 'org.mapstruct:mapstruct:1.6.0'

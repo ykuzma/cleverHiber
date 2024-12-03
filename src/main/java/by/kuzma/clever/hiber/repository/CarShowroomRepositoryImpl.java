@@ -1,7 +1,9 @@
 package by.kuzma.clever.hiber.repository;
 
 import by.kuzma.clever.hiber.HibernateUtil;
+import by.kuzma.clever.hiber.entity.Car;
 import by.kuzma.clever.hiber.entity.CarShowroom;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import java.util.List;
@@ -19,21 +21,22 @@ public class CarShowroomRepositoryImpl implements CarShowroomRepository {
 
     @Override
     public List<CarShowroom> findAll() {
-        return null;
+        return sessionFactory.getCurrentSession().createQuery("FROM CarShowroom", CarShowroom.class).list();
     }
 
     @Override
     public CarShowroom findById(UUID id) {
-        return null;
+        return sessionFactory.getCurrentSession().get(CarShowroom.class, id);
     }
 
     @Override
     public void deleteById(UUID id) {
-
+        Session currentSession = sessionFactory.getCurrentSession();
+        currentSession.remove(currentSession.get(CarShowroom.class, id));
     }
 
     @Override
     public CarShowroom update(CarShowroom carShowroom) {
-        return null;
+        return sessionFactory.getCurrentSession().merge(carShowroom);
     }
 }

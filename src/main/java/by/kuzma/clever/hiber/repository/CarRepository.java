@@ -7,6 +7,7 @@ import java.util.UUID;
 
 public interface CarRepository {
     Car save(Car car);
+    Car update(Car car);
     Car findById(UUID id);
     List<Car> findAll();
     void deleteByID(UUID id);

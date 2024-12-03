@@ -15,26 +15,28 @@ public class CarRepositoryImpl implements CarRepository {
 
     @Override
     public Car save(Car car) {
-        Session session = sessionFactory.openSession();
-        session.beginTransaction();
-        session.persist(car);
-        session.getTransaction().commit();
-        session.close();
+        sessionFactory.getCurrentSession().persist(car);
         return car;
     }
 
     @Override
+    public Car update(Car car) {
+        return sessionFactory.getCurrentSession().merge(car);
+    }
+
+    @Override
     public Car findById(UUID id) {
-        return null;
+        return sessionFactory.getCurrentSession().get(Car.class, id);
     }
 
     @Override
     public List<Car> findAll() {
-        return null;
+        return sessionFactory.getCurrentSession().createQuery("FROM Car", Car.class).list();
     }
 
     @Override
     public void deleteByID(UUID id) {
-
+        Session currentSession = sessionFactory.getCurrentSession();
+        currentSession.remove(currentSession.get(Car.class, id));
     }
 }

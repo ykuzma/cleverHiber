@@ -10,7 +10,7 @@ public interface CarRepository {
     Car update(Car car);
     Car findById(UUID id);
     List<Car> findAll();
-    void deleteByID(UUID id);
+    void deleteById(UUID id);
 
 
 }

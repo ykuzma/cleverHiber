@@ -35,7 +35,7 @@ public class CarRepositoryImpl implements CarRepository {
     }
 
     @Override
-    public void deleteByID(UUID id) {
+    public void deleteById(UUID id) {
         Session currentSession = sessionFactory.getCurrentSession();
         currentSession.remove(currentSession.get(Car.class, id));
     }

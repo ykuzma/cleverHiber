@@ -137,22 +137,4 @@ public class CarShowroomServiceImpl implements CarShowroomService {
         return showroomUpdated;
     }
 
-
-    @Override
-    public void assignCarToShowroom(Car car, CarShowroom showroom) {
-        Transaction transaction = null;
-
-        try {
-            transaction = sessionFactory.getCurrentSession().beginTransaction();
-            CarShowroom byId = repository.findById(showroom.getId());
-            byId.addCar(car);
-            transaction.commit();
-        } catch (HibernateException e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw new RuntimeException(e);
-        }
-
-    }
 }

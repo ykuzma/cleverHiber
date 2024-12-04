@@ -60,8 +60,10 @@ public class CarShowroom {
 
     public void addCar (Car car) {
         getCars().add(car);
+        car.setCarShowroom(this);
     }
     public void removeCar (Car car){
         getCars().remove(car);
+        car.setCarShowroom(this);
     }
 }

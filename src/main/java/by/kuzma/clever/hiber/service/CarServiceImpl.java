@@ -2,6 +2,7 @@ package by.kuzma.clever.hiber.service;
 
 import by.kuzma.clever.hiber.HibernateUtil;
 import by.kuzma.clever.hiber.entity.Car;
+import by.kuzma.clever.hiber.entity.CarShowroom;
 import by.kuzma.clever.hiber.repository.CarRepository;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -183,6 +184,25 @@ public class CarServiceImpl implements CarService {
         List<Car> resultList = query.setOrder(Collections.singletonList(order)).getResultList();
         currentSession.getTransaction().commit();
         return resultList;
+    }
+
+    public void assignCarToShowroom(Car car, CarShowroom showroom) {
+        Transaction transaction = null;
+
+        try {
+            transaction = sessionFactory.getCurrentSession().beginTransaction();
+
+            car.setCarShowroom(sessionFactory.getCurrentSession().getReference(CarShowroom.class, showroom.getId()));
+            car.setId(car.getId());
+            repository.update(car);
+            transaction.commit();
+        } catch (HibernateException e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            throw new RuntimeException(e);
+        }
+
     }
 
 

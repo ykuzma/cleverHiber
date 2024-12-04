@@ -10,7 +10,10 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -20,7 +23,8 @@ import java.util.UUID;
 @Getter
 @Setter
 @ToString
-public class Category {
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+public class Category{
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

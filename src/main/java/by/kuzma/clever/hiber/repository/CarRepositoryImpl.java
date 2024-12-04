@@ -30,8 +30,9 @@ public class CarRepositoryImpl implements CarRepository {
     }
 
     @Override
-    public List<Car> findAll() {
-        return sessionFactory.getCurrentSession().createQuery("FROM Car", Car.class).list();
+     public List<Car> findAll() {
+        return sessionFactory.getCurrentSession()
+                .createQuery("FROM Car", Car.class).setCacheable(true).list();
     }
 
     @Override

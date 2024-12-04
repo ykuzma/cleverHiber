@@ -12,6 +12,8 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import java.util.UUID;
 
@@ -20,6 +22,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @ToString
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Car {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -34,6 +37,8 @@ public class Car {
     private int yearOfProduction;
     @Column(name = "price")
     private double price;
+
+
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "category_id")
     private Category category;

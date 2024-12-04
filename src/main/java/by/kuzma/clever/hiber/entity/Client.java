@@ -1,5 +1,6 @@
 package by.kuzma.clever.hiber.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -12,6 +13,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,6 +36,13 @@ public class Client {
     @ElementCollection
     private List<String> contacts;
 
-    @ManyToMany
-    private List<Car> cars;
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH})
+    private List<Car> cars = new ArrayList<>();
+
+    public void addCar (Car car) {
+        getCars().add(car);
+    }
+    public void removeCar (Car car){
+        getCars().remove(car);
+    }
 }

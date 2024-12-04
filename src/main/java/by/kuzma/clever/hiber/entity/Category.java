@@ -1,6 +1,5 @@
 package by.kuzma.clever.hiber.entity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,6 +29,7 @@ public class Category {
     @Column(name = "name")
     private String name;
 
+    @ToString.Exclude
     @OneToMany(mappedBy = "category")
     private List<Car> cars = new ArrayList<>();
 }

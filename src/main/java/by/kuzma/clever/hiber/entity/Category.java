@@ -1,5 +1,6 @@
 package by.kuzma.clever.hiber.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,6 +12,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,5 +31,5 @@ public class Category {
     private String name;
 
     @OneToMany(mappedBy = "category")
-    private List<Car> cars;
+    private List<Car> cars = new ArrayList<>();
 }

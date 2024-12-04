@@ -34,7 +34,7 @@ public class Car {
     private int yearOfProduction;
     @Column(name = "price")
     private double price;
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "category_id")
     private Category category;
 

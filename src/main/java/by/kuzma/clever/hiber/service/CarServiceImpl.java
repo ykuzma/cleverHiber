@@ -2,12 +2,21 @@ package by.kuzma.clever.hiber.service;
 
 import by.kuzma.clever.hiber.HibernateUtil;
 import by.kuzma.clever.hiber.entity.Car;
-import by.kuzma.clever.hiber.entity.CarShowroom;
 import by.kuzma.clever.hiber.repository.CarRepository;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import org.hibernate.HibernateException;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.query.Order;
+import org.hibernate.query.Query;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,6 +29,8 @@ public class CarServiceImpl implements CarService {
     public CarServiceImpl(CarRepository repository) {
         this.repository = repository;
     }
+
+
 
     @Override
     public List<Car> findAll() {
@@ -104,6 +115,58 @@ public class CarServiceImpl implements CarService {
             throw new RuntimeException(e);
         }
         return carUpdated;
+    }
+
+    @Override
+    public List<Car> findCarsByFilters(String brand, String category, int year, double minPrice, double maxPrice) {
+        sessionFactory.getCurrentSession().beginTransaction();
+        CriteriaBuilder cb =sessionFactory.getCurrentSession().getCriteriaBuilder();
+        List<Predicate> predicates = new ArrayList<>();
+
+        CriteriaQuery<Car> cq2 = cb.createQuery(Car.class);
+        Root<Car> root2 = cq2.from(Car.class);
+        root2.fetch("category", JoinType.INNER);
+        if(brand != null) {
+            predicates.add(cb.equal(root2.get("mark"), brand));
+        }
+        if(category != null) {
+            predicates.add(cb.equal(root2.get("category").get("name"), category));
+        }
+        if(year > 0) {
+            predicates.add(cb.equal(root2.get("yearOfProduction"), year));
+        }
+        if(minPrice > 0 ) {
+            predicates.add(cb.greaterThanOrEqualTo(root2.get("price"), minPrice));
+        }
+        if(maxPrice > 0 ) {
+            predicates.add(cb.lessThanOrEqualTo(root2.get("price"), maxPrice));
+        }
+        cq2.select(root2).where(predicates.toArray(new Predicate[0]));
+
+        Query<Car> query2 = sessionFactory.getCurrentSession().createQuery(cq2);
+        List<Car> resultList = query2.getResultList();
+        sessionFactory.getCurrentSession().getTransaction().commit();
+        return resultList;
+
+    }
+
+    @Override
+    public List<Car> findCarsWithSort(boolean isASC) {
+        Session currentSession = sessionFactory.getCurrentSession();
+        currentSession.beginTransaction();
+        Order<? super Car> order;
+        if(isASC) {
+            order = Order.asc(Car.class, "price");
+        }else {
+            order = Order.desc(Car.class, "price");
+        }
+
+        CriteriaQuery<Car> selectQuery = currentSession.getCriteriaBuilder().createQuery(Car.class);
+        selectQuery.from(Car.class).fetch("category", JoinType.INNER);
+        Query<Car> query = currentSession.createQuery(selectQuery);
+        List<Car> resultList = query.setOrder(Collections.singletonList(order)).getResultList();
+        currentSession.getTransaction().commit();
+        return resultList;
     }
 
 

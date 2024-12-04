@@ -8,9 +8,17 @@ import java.util.UUID;
 public interface CarService {
 
     List<Car> findAll();
+
     Car findById(UUID id);
+
     Car addCar(Car car);
+
     void delete(UUID id);
+
     Car update(Car car, UUID id);
+
+    List<Car> findCarsByFilters(String brand, String category, int year, double minPrice, double maxPrice);
+
+    List<Car> findCarsWithSort(boolean isASC);
 
 }

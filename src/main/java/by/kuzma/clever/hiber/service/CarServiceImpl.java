@@ -51,6 +51,22 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
+    public List<Car> findAllWithPagination(int pageNumber, int pageSize) {
+        Session currentSession = sessionFactory.getCurrentSession();
+        currentSession.beginTransaction();
+
+        CriteriaQuery<Car> selectQuery = currentSession.getCriteriaBuilder().createQuery(Car.class);
+        selectQuery.from(Car.class);
+        Query<Car> query = currentSession.createQuery(selectQuery);
+        query.setFirstResult(pageNumber * pageSize);
+        query.setMaxResults(pageSize);
+        List<Car> resultList = query.getResultList();
+        currentSession.getTransaction().commit();
+        return resultList;
+
+    }
+
+    @Override
     public Car findById(UUID id) {
         Transaction transaction = null;
         Car car;

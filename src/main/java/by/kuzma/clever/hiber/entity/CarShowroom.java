@@ -22,7 +22,7 @@ import java.util.UUID;
 @Table(name = "car_showroom")
 @Getter
 @Setter
-
+@ToString
 public class CarShowroom {
 
 
@@ -36,6 +36,7 @@ public class CarShowroom {
     @Embedded
     private Address address;
 
+    @ToString.Exclude
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "showroom_id")
     private List<Car> cars = new ArrayList<>();

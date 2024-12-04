@@ -9,6 +9,8 @@ public interface CarService {
 
     List<Car> findAll();
 
+    List<Car> findAllWithPagination(int pageNumber, int pageSize);
+
     Car findById(UUID id);
 
     Car addCar(Car car);

@@ -8,6 +8,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.NamedAttributeNode;
+import jakarta.persistence.NamedEntityGraph;
+import jakarta.persistence.NamedEntityGraphs;
+import jakarta.persistence.NamedSubgraph;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -23,6 +27,19 @@ import java.util.UUID;
 @Getter
 @Setter
 @ToString
+@NamedEntityGraphs({
+
+        @NamedEntityGraph(
+                name = "CarShowroom.withCarAndCategory",
+                attributeNodes = {
+                        @NamedAttributeNode(value = "cars", subgraph = "carsWithCategory")
+                },
+                subgraphs = @NamedSubgraph(
+                        name = "carsWithCategory",
+                        attributeNodes = @NamedAttributeNode("category")
+                )
+        )
+})
 public class CarShowroom {
 
 
@@ -36,7 +53,7 @@ public class CarShowroom {
     @Embedded
     private Address address;
 
-    @ToString.Exclude
+
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "showroom_id")
     private List<Car> cars = new ArrayList<>();

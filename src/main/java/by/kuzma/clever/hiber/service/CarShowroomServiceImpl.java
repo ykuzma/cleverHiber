@@ -5,11 +5,11 @@ import by.kuzma.clever.hiber.entity.Car;
 import by.kuzma.clever.hiber.entity.CarShowroom;
 import by.kuzma.clever.hiber.repository.CarShowroomRepository;
 import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Root;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.graph.RootGraph;
 import org.hibernate.query.criteria.HibernateCriteriaBuilder;
 
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.UUID;
 
 public class CarShowroomServiceImpl implements CarShowroomService {
 
-    private  final SessionFactory sessionFactory = HibernateUtil.configSessionFactory();
+    private final SessionFactory sessionFactory = HibernateUtil.configSessionFactory();
     private final CarShowroomRepository repository;
 
     public CarShowroomServiceImpl(CarShowroomRepository repository) {
@@ -52,9 +52,14 @@ public class CarShowroomServiceImpl implements CarShowroomService {
             HibernateCriteriaBuilder cb = sessionFactory.getCurrentSession().getCriteriaBuilder();
             CriteriaQuery<CarShowroom> query = cb.createQuery(CarShowroom.class);
             Root<CarShowroom> root = query.from(CarShowroom.class);
-            root.fetch("cars", JoinType.LEFT);
             query.select(root);
-            showrooms = sessionFactory.getCurrentSession().createQuery(query).getResultList();
+
+            RootGraph<?> entityGraph = sessionFactory.getCurrentSession()
+                    .getEntityGraph("CarShowroom.withCarAndCategory");
+
+            showrooms = sessionFactory.getCurrentSession()
+                    .createQuery(query)
+                    .setHint("jakarta.persistence.fetchgraph", entityGraph).getResultList();
             transaction.commit();
         } catch (HibernateException e) {
             if (transaction != null) {

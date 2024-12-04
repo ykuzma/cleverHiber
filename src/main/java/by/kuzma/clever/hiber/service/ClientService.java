@@ -9,7 +9,7 @@ import java.util.UUID;
 public interface ClientService {
     List<Client> findAll();
 
-  /*  List<CarShowroom> getShowroomWithAllCars();*/
+
     Client findById(UUID id);
     Client addClient(Client client);
     void delete(UUID id);

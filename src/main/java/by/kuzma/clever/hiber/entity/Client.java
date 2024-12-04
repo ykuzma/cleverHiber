@@ -34,7 +34,7 @@ public class Client {
     private LocalDate dateOfRegistration;
 
     @ElementCollection
-    private List<String> contacts;
+    private List<String> contacts = new ArrayList<>();
 
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH})
     private List<Car> cars = new ArrayList<>();

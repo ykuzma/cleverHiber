@@ -1,6 +1,8 @@
 package by.kuzma.clever.hiber.service;
 
 import by.kuzma.clever.hiber.HibernateUtil;
+import by.kuzma.clever.hiber.entity.Car;
+import by.kuzma.clever.hiber.entity.Client;
 import by.kuzma.clever.hiber.entity.Review;
 import by.kuzma.clever.hiber.repository.ReviewRepository;
 import org.hibernate.HibernateException;
@@ -27,7 +29,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         List<Review> reviews;
         try {
-            transaction = sessionFactory.getCurrentSession().beginTransaction();
+            transaction = HibernateUtil.openTransaction();
             reviews = repository.findAll();
             transaction.commit();
         } catch (HibernateException e) {
@@ -44,7 +46,7 @@ public class ReviewServiceImpl implements ReviewService {
         Transaction transaction = null;
         Review review;
         try {
-            transaction = sessionFactory.getCurrentSession().beginTransaction();
+            transaction = HibernateUtil.openTransaction();
             review = repository.findById(id);
             transaction.commit();
         } catch (HibernateException e) {
@@ -57,11 +59,12 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public Review addReview(Review review) {
+    public Review addReview(Client client, Car car, String text, int rating) {
         Review reviewPersist;
         Transaction transaction = null;
         try {
-            transaction = sessionFactory.getCurrentSession().beginTransaction();
+            transaction = HibernateUtil.openTransaction();
+            Review review = Review.builder().car(car).client(client).content(text).rank(rating).build();
             reviewPersist = repository.save(review);
             transaction.commit();
         } catch (HibernateException e) {
@@ -77,7 +80,7 @@ public class ReviewServiceImpl implements ReviewService {
     public void delete(UUID id) {
         Transaction transaction = null;
         try {
-            transaction = sessionFactory.getCurrentSession().beginTransaction();
+            transaction = HibernateUtil.openTransaction();
             repository.deleteById(id);
             transaction.commit();
         } catch (HibernateException e) {
@@ -93,7 +96,7 @@ public class ReviewServiceImpl implements ReviewService {
         Transaction transaction = null;
         Review reviewUpdated;
         try {
-            transaction = sessionFactory.getCurrentSession().beginTransaction();
+            transaction = HibernateUtil.openTransaction();
             client.setId(id);
             reviewUpdated = repository.update(client);
             transaction.commit();
@@ -108,17 +111,32 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public List<Review> fullTextSearch(String predicate) {
-        sessionFactory.getCurrentSession().beginTransaction();
-        SearchSession searchSession = Search.session(sessionFactory.getCurrentSession());
+        Transaction transaction = null;
+        List<Review> result;
+        try {
+            transaction = HibernateUtil.openTransaction();
+            result = getReviews(predicate);
+            transaction.commit();
+        } catch (HibernateException e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            throw new RuntimeException(e);
+        }
 
-        List<Review> result = searchSession.search(Review.class)
+        return result;
+    }
+
+    private List<Review> getReviews(String predicate) {
+        SearchSession searchSession = Search.session(sessionFactory.getCurrentSession());
+        List<Review> result;
+        result = searchSession.search(Review.class)
                 .where(f -> f.match()
                         .fields("content")
                         .matching(predicate))
                 .fetchAllHits();
-
-
-        sessionFactory.getCurrentSession().getTransaction().commit();
         return result;
     }
+
+
 }

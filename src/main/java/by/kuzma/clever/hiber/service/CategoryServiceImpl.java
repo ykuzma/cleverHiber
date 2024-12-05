@@ -4,7 +4,6 @@ import by.kuzma.clever.hiber.HibernateUtil;
 import by.kuzma.clever.hiber.entity.Category;
 import by.kuzma.clever.hiber.repository.CategoryRepository;
 import org.hibernate.HibernateException;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 import java.util.List;
@@ -12,8 +11,7 @@ import java.util.UUID;
 
 public class CategoryServiceImpl implements CategoryService {
 
-    private final SessionFactory sessionFactory = HibernateUtil.configSessionFactory();
-    private final CategoryRepository repository;
+     private final CategoryRepository repository;
 
     public CategoryServiceImpl(CategoryRepository categoryRepository) {
         repository = categoryRepository;
@@ -25,7 +23,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         List<Category> categories;
         try {
-            transaction = sessionFactory.getCurrentSession().beginTransaction();
+            transaction = HibernateUtil.openTransaction();
             categories = repository.findAll();
             transaction.commit();
         } catch (HibernateException e) {
@@ -42,7 +40,7 @@ public class CategoryServiceImpl implements CategoryService {
         Transaction transaction = null;
         Category category;
         try {
-            transaction = sessionFactory.getCurrentSession().beginTransaction();
+            transaction = HibernateUtil.openTransaction();
             category = repository.findById(id);
             transaction.commit();
         } catch (HibernateException e) {
@@ -59,7 +57,7 @@ public class CategoryServiceImpl implements CategoryService {
         Category categoryPersist;
         Transaction transaction = null;
         try {
-            transaction = sessionFactory.getCurrentSession().beginTransaction();
+            transaction = HibernateUtil.openTransaction();
             categoryPersist = repository.save(category);
             transaction.commit();
         } catch (HibernateException e) {
@@ -75,7 +73,7 @@ public class CategoryServiceImpl implements CategoryService {
     public void delete(UUID id) {
         Transaction transaction = null;
         try {
-            transaction = sessionFactory.getCurrentSession().beginTransaction();
+            transaction = HibernateUtil.openTransaction();
             repository.deleteById(id);
             transaction.commit();
         } catch (HibernateException e) {
@@ -91,7 +89,7 @@ public class CategoryServiceImpl implements CategoryService {
         Transaction transaction = null;
         Category categoryUpdated;
         try {
-            transaction = sessionFactory.getCurrentSession().beginTransaction();
+            transaction = HibernateUtil.openTransaction();
             category.setId(id);
             categoryUpdated = repository.update(category);
             transaction.commit();

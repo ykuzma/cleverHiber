@@ -54,7 +54,7 @@ public class CarShowroom {
     private Address address;
 
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "showroom_id")
     private List<Car> cars = new ArrayList<>();
 

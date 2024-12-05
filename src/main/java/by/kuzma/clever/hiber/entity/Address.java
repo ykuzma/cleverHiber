@@ -13,8 +13,12 @@ import lombok.Setter;
 public class Address {
     @Column(name = "post_index")
     private int postIndex;
+    @Column(name = "street")
     private String street;
+    @Column(name = "house_number")
     private String houseNumber;
+    @Column(name = "building")
     private String building;
+    @Column(name = "room")
     private String room;
 }

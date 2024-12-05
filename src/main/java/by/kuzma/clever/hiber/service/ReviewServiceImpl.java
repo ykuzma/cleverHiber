@@ -6,6 +6,8 @@ import by.kuzma.clever.hiber.repository.ReviewRepository;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.search.mapper.orm.Search;
+import org.hibernate.search.mapper.orm.session.SearchSession;
 
 import java.util.List;
 import java.util.UUID;
@@ -102,5 +104,21 @@ public class ReviewServiceImpl implements ReviewService {
             throw new RuntimeException(e);
         }
         return reviewUpdated;
+    }
+
+    @Override
+    public List<Review> fullTextSearch(String predicate) {
+        sessionFactory.getCurrentSession().beginTransaction();
+        SearchSession searchSession = Search.session(sessionFactory.getCurrentSession());
+
+        List<Review> result = searchSession.search(Review.class)
+                .where(f -> f.match()
+                        .fields("content")
+                        .matching(predicate))
+                .fetchAllHits();
+
+
+        sessionFactory.getCurrentSession().getTransaction().commit();
+        return result;
     }
 }

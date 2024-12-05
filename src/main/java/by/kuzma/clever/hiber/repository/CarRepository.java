@@ -13,4 +13,9 @@ public interface CarRepository {
     void deleteById(UUID id);
 
 
+    List<Car> findAllWithPagination(int pageNumber, int pageSize);
+
+    List<Car> findCarWithSort(boolean isASC);
+
+    List<Car> findCarsByFilters(String brand, String category, int year, double minPrice, double maxPrice);
 }

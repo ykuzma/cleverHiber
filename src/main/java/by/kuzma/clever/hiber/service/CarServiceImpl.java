@@ -4,20 +4,10 @@ import by.kuzma.clever.hiber.HibernateUtil;
 import by.kuzma.clever.hiber.entity.Car;
 import by.kuzma.clever.hiber.entity.CarShowroom;
 import by.kuzma.clever.hiber.repository.CarRepository;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.JoinType;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
 import org.hibernate.HibernateException;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.query.Order;
-import org.hibernate.query.Query;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,14 +22,13 @@ public class CarServiceImpl implements CarService {
     }
 
 
-
     @Override
     public List<Car> findAll() {
         Transaction transaction = null;
 
         List<Car> cars;
         try {
-            transaction = sessionFactory.getCurrentSession().beginTransaction();
+            transaction = HibernateUtil.openTransaction();
             cars = repository.findAll();
             transaction.commit();
         } catch (HibernateException e) {
@@ -53,18 +42,21 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public List<Car> findAllWithPagination(int pageNumber, int pageSize) {
-        Session currentSession = sessionFactory.getCurrentSession();
-        currentSession.beginTransaction();
+        Transaction transaction = null;
 
-        CriteriaQuery<Car> selectQuery = currentSession.getCriteriaBuilder().createQuery(Car.class);
-        selectQuery.from(Car.class);
-        Query<Car> query = currentSession.createQuery(selectQuery);
-        query.setFirstResult(pageNumber * pageSize);
-        query.setMaxResults(pageSize);
-        List<Car> resultList = query.getResultList();
-        currentSession.getTransaction().commit();
-        return resultList;
+        List<Car> cars;
+        try {
+            transaction = HibernateUtil.openTransaction();
+            cars = repository.findAllWithPagination(pageNumber * pageSize, pageSize);
+            transaction.commit();
+        } catch (HibernateException e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            throw new RuntimeException(e);
+        }
 
+        return cars;
     }
 
     @Override
@@ -72,7 +64,7 @@ public class CarServiceImpl implements CarService {
         Transaction transaction = null;
         Car car;
         try {
-            transaction = sessionFactory.getCurrentSession().beginTransaction();
+            transaction = HibernateUtil.openTransaction();
             car = repository.findById(id);
             transaction.commit();
         } catch (HibernateException e) {
@@ -89,7 +81,7 @@ public class CarServiceImpl implements CarService {
         Car carPersist;
         Transaction transaction = null;
         try {
-            transaction = sessionFactory.getCurrentSession().beginTransaction();
+            transaction = HibernateUtil.openTransaction();
             car.setCategory(sessionFactory.getCurrentSession().getReference(car.getCategory()));
             carPersist = repository.save(car);
             transaction.commit();
@@ -106,7 +98,7 @@ public class CarServiceImpl implements CarService {
     public void delete(UUID id) {
         Transaction transaction = null;
         try {
-            transaction = sessionFactory.getCurrentSession().beginTransaction();
+            transaction = HibernateUtil.openTransaction();
             repository.deleteById(id);
             transaction.commit();
         } catch (HibernateException e) {
@@ -122,7 +114,8 @@ public class CarServiceImpl implements CarService {
         Transaction transaction = null;
         Car carUpdated;
         try {
-            transaction = sessionFactory.getCurrentSession().beginTransaction();
+            transaction = HibernateUtil.openTransaction();
+
             car.setId(id);
             carUpdated = repository.update(car);
             transaction.commit();
@@ -137,63 +130,52 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public List<Car> findCarsByFilters(String brand, String category, int year, double minPrice, double maxPrice) {
-        sessionFactory.getCurrentSession().beginTransaction();
-        CriteriaBuilder cb =sessionFactory.getCurrentSession().getCriteriaBuilder();
-        List<Predicate> predicates = new ArrayList<>();
+        Transaction transaction = null;
 
-        CriteriaQuery<Car> cq2 = cb.createQuery(Car.class);
-        Root<Car> root2 = cq2.from(Car.class);
-        root2.fetch("category", JoinType.INNER);
-        if(brand != null) {
-            predicates.add(cb.equal(root2.get("mark"), brand));
+        List<Car> cars;
+        try {
+            transaction = HibernateUtil.openTransaction();
+            cars = repository.findCarsByFilters(brand, category, year, minPrice, maxPrice);
+            transaction.commit();
+        } catch (HibernateException e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            throw new RuntimeException(e);
         }
-        if(category != null) {
-            predicates.add(cb.equal(root2.get("category").get("name"), category));
-        }
-        if(year > 0) {
-            predicates.add(cb.equal(root2.get("yearOfProduction"), year));
-        }
-        if(minPrice > 0 ) {
-            predicates.add(cb.greaterThanOrEqualTo(root2.get("price"), minPrice));
-        }
-        if(maxPrice > 0 ) {
-            predicates.add(cb.lessThanOrEqualTo(root2.get("price"), maxPrice));
-        }
-        cq2.select(root2).where(predicates.toArray(new Predicate[0]));
 
-        Query<Car> query2 = sessionFactory.getCurrentSession().createQuery(cq2);
-        List<Car> resultList = query2.getResultList();
-        sessionFactory.getCurrentSession().getTransaction().commit();
-        return resultList;
+        return cars;
 
     }
 
+
     @Override
     public List<Car> findCarsWithSort(boolean isASC) {
-        Session currentSession = sessionFactory.getCurrentSession();
-        currentSession.beginTransaction();
-        Order<? super Car> order;
-        if(isASC) {
-            order = Order.asc(Car.class, "price");
-        }else {
-            order = Order.desc(Car.class, "price");
+        Transaction transaction = null;
+
+        List<Car> cars;
+        try {
+            transaction = HibernateUtil.openTransaction();
+            cars = repository.findCarWithSort(isASC);
+            transaction.commit();
+        } catch (HibernateException e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            throw new RuntimeException(e);
         }
 
-        CriteriaQuery<Car> selectQuery = currentSession.getCriteriaBuilder().createQuery(Car.class);
-        selectQuery.from(Car.class).fetch("category", JoinType.INNER);
-        Query<Car> query = currentSession.createQuery(selectQuery);
-        List<Car> resultList = query.setOrder(Collections.singletonList(order)).getResultList();
-        currentSession.getTransaction().commit();
-        return resultList;
+
+        return cars;
     }
 
     public void assignCarToShowroom(Car car, CarShowroom showroom) {
         Transaction transaction = null;
 
         try {
-            transaction = sessionFactory.getCurrentSession().beginTransaction();
+            transaction = HibernateUtil.openTransaction();
 
-            car.setCarShowroom(sessionFactory.getCurrentSession().getReference(CarShowroom.class, showroom.getId()));
+            car.setCarShowroom(sessionFactory.getCurrentSession().getReference(showroom));
             car.setId(car.getId());
             repository.update(car);
             transaction.commit();

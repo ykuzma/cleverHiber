@@ -6,12 +6,20 @@ import by.kuzma.clever.hiber.entity.Category;
 import by.kuzma.clever.hiber.entity.Client;
 import by.kuzma.clever.hiber.entity.Review;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 
 public class HibernateUtil {
     private static SessionFactory sessionFactory;
+
+    public static Transaction openTransaction() {
+
+        return  configSessionFactory().getCurrentSession().beginTransaction();
+    }
+
+
 
     public static SessionFactory configSessionFactory() {
         if (sessionFactory == null) {

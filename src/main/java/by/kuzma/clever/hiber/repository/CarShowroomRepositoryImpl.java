@@ -1,7 +1,6 @@
 package by.kuzma.clever.hiber.repository;
 
 import by.kuzma.clever.hiber.HibernateUtil;
-import by.kuzma.clever.hiber.entity.Car;
 import by.kuzma.clever.hiber.entity.CarShowroom;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

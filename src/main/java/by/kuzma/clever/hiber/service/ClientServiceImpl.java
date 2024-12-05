@@ -2,7 +2,6 @@ package by.kuzma.clever.hiber.service;
 
 import by.kuzma.clever.hiber.HibernateUtil;
 import by.kuzma.clever.hiber.entity.Car;
-import by.kuzma.clever.hiber.entity.CarShowroom;
 import by.kuzma.clever.hiber.entity.Client;
 import by.kuzma.clever.hiber.repository.ClientRepository;
 import org.hibernate.HibernateException;
@@ -90,11 +89,11 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public Client update(Client client, UUID id) {
         Transaction transaction = null;
-        Client ClientUpdated;
+        Client clientUpdated;
         try {
             transaction = sessionFactory.getCurrentSession().beginTransaction();
             client.setId(id);
-            ClientUpdated = repository.update(client);
+            clientUpdated = repository.update(client);
             transaction.commit();
         } catch (HibernateException e) {
             if (transaction != null) {
@@ -102,7 +101,7 @@ public class ClientServiceImpl implements ClientService {
             }
             throw new RuntimeException(e);
         }
-        return ClientUpdated;
+        return clientUpdated;
     }
 
     @Override

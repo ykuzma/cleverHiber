@@ -1,7 +1,6 @@
 package by.kuzma.clever.hiber.service;
 
 import by.kuzma.clever.hiber.HibernateUtil;
-import by.kuzma.clever.hiber.entity.Car;
 import by.kuzma.clever.hiber.entity.Category;
 import by.kuzma.clever.hiber.repository.CategoryRepository;
 import org.hibernate.HibernateException;

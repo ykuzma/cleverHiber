@@ -2,9 +2,13 @@ package by.kuzma.clever.hiber.repository;
 
 import by.kuzma.clever.hiber.HibernateUtil;
 import by.kuzma.clever.hiber.entity.Car;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.JoinType;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,7 +19,7 @@ public class CarRepositoryImpl implements CarRepository {
 
     @Override
     public Car save(Car car) {
-        sessionFactory.getCurrentSession().persist(car);
+        sessionFactory.getCurrentSession().merge(car);
         return car;
     }
 
@@ -31,8 +35,10 @@ public class CarRepositoryImpl implements CarRepository {
 
     @Override
      public List<Car> findAll() {
-        return sessionFactory.getCurrentSession()
-                .createQuery("FROM Car", Car.class).setCacheable(true).list();
+        CriteriaQuery<Car> selectQuery = sessionFactory.getCurrentSession().getCriteriaBuilder().createQuery(Car.class);
+        selectQuery.from(Car.class).fetch("category", JoinType.INNER);
+
+        return sessionFactory.getCurrentSession().createQuery(selectQuery).getResultList();
     }
 
     @Override

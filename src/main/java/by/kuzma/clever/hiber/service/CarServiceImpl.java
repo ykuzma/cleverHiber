@@ -90,6 +90,7 @@ public class CarServiceImpl implements CarService {
         Transaction transaction = null;
         try {
             transaction = sessionFactory.getCurrentSession().beginTransaction();
+            car.setCategory(sessionFactory.getCurrentSession().getReference(car.getCategory()));
             carPersist = repository.save(car);
             transaction.commit();
         } catch (HibernateException e) {

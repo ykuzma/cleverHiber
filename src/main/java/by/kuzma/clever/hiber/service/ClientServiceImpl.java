@@ -25,7 +25,7 @@ public class ClientServiceImpl implements ClientService {
 
         List<Client> clients;
         try {
-            transaction = sessionFactory.getCurrentSession().beginTransaction();
+            transaction = HibernateUtil.openTransaction();
             clients = repository.findAll();
             transaction.commit();
         } catch (HibernateException e) {
@@ -42,7 +42,7 @@ public class ClientServiceImpl implements ClientService {
         Transaction transaction = null;
         Client client;
         try {
-            transaction = sessionFactory.getCurrentSession().beginTransaction();
+            transaction = HibernateUtil.openTransaction();
             client = repository.findById(id);
             transaction.commit();
         } catch (HibernateException e) {
@@ -59,7 +59,7 @@ public class ClientServiceImpl implements ClientService {
         Client clientPersist;
         Transaction transaction = null;
         try {
-            transaction = sessionFactory.getCurrentSession().beginTransaction();
+            transaction = HibernateUtil.openTransaction();
             clientPersist = repository.save(client);
             transaction.commit();
         } catch (HibernateException e) {
@@ -75,7 +75,7 @@ public class ClientServiceImpl implements ClientService {
     public void delete(UUID id) {
         Transaction transaction = null;
         try {
-            transaction = sessionFactory.getCurrentSession().beginTransaction();
+            transaction = HibernateUtil.openTransaction();
             repository.deleteById(id);
             transaction.commit();
         } catch (HibernateException e) {
@@ -91,7 +91,7 @@ public class ClientServiceImpl implements ClientService {
         Transaction transaction = null;
         Client clientUpdated;
         try {
-            transaction = sessionFactory.getCurrentSession().beginTransaction();
+            transaction = HibernateUtil.openTransaction();
             client.setId(id);
             clientUpdated = repository.update(client);
             transaction.commit();
@@ -109,9 +109,10 @@ public class ClientServiceImpl implements ClientService {
         Transaction transaction = null;
 
         try {
-            transaction = sessionFactory.getCurrentSession().beginTransaction();
+            transaction = HibernateUtil.openTransaction();
+
             Client byId = repository.findById(client.getId());
-            byId.addCar(car);
+            byId.addCar(sessionFactory.getCurrentSession().getReference(car));
             transaction.commit();
         } catch (HibernateException e) {
             if (transaction != null) {

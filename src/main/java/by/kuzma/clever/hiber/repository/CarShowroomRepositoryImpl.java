@@ -2,8 +2,13 @@ package by.kuzma.clever.hiber.repository;
 
 import by.kuzma.clever.hiber.HibernateUtil;
 import by.kuzma.clever.hiber.entity.CarShowroom;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.graph.GraphSemantic;
+import org.hibernate.graph.RootGraph;
+import org.hibernate.query.criteria.HibernateCriteriaBuilder;
 
 import java.util.List;
 import java.util.UUID;
@@ -37,5 +42,19 @@ public class CarShowroomRepositoryImpl implements CarShowroomRepository {
     @Override
     public CarShowroom update(CarShowroom carShowroom) {
         return sessionFactory.getCurrentSession().merge(carShowroom);
+    }
+
+    @Override
+    public List<CarShowroom> getShowroomWithAllCars() {
+        Session currentSession = sessionFactory.getCurrentSession();
+        CriteriaQuery<CarShowroom> query = currentSession.getCriteriaBuilder().createQuery(CarShowroom.class);
+        Root<CarShowroom> root = query.from(CarShowroom.class);
+        query.select(root);
+
+        RootGraph<?> entityGraph = currentSession.getEntityGraph("CarShowroom.withCarAndCategory");
+
+        return currentSession
+                .createQuery(query)
+                .setHint("jakarta.persistence.fetchgraph", entityGraph).getResultList();
     }
 }

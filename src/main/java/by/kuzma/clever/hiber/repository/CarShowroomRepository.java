@@ -12,4 +12,6 @@ public interface CarShowroomRepository {
     CarShowroom findById(UUID id);
     void deleteById(UUID id);
     CarShowroom update(CarShowroom carShowroom);
+
+    List<CarShowroom> getShowroomWithAllCars();
 }

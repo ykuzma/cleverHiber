@@ -3,20 +3,14 @@ package by.kuzma.clever.hiber.service;
 import by.kuzma.clever.hiber.HibernateUtil;
 import by.kuzma.clever.hiber.entity.CarShowroom;
 import by.kuzma.clever.hiber.repository.CarShowroomRepository;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
 import org.hibernate.HibernateException;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.graph.RootGraph;
-import org.hibernate.query.criteria.HibernateCriteriaBuilder;
 
 import java.util.List;
 import java.util.UUID;
 
 public class CarShowroomServiceImpl implements CarShowroomService {
 
-    private final SessionFactory sessionFactory = HibernateUtil.configSessionFactory();
     private final CarShowroomRepository repository;
 
     public CarShowroomServiceImpl(CarShowroomRepository repository) {
@@ -29,7 +23,7 @@ public class CarShowroomServiceImpl implements CarShowroomService {
 
         List<CarShowroom> showrooms;
         try {
-            transaction = sessionFactory.getCurrentSession().beginTransaction();
+            transaction = HibernateUtil.openTransaction();
             showrooms = repository.findAll();
             transaction.commit();
         } catch (HibernateException e) {
@@ -47,18 +41,9 @@ public class CarShowroomServiceImpl implements CarShowroomService {
 
         List<CarShowroom> showrooms;
         try {
-            transaction = sessionFactory.getCurrentSession().beginTransaction();
-            HibernateCriteriaBuilder cb = sessionFactory.getCurrentSession().getCriteriaBuilder();
-            CriteriaQuery<CarShowroom> query = cb.createQuery(CarShowroom.class);
-            Root<CarShowroom> root = query.from(CarShowroom.class);
-            query.select(root);
+            transaction = HibernateUtil.openTransaction();
+            showrooms = repository.getShowroomWithAllCars();
 
-            RootGraph<?> entityGraph = sessionFactory.getCurrentSession()
-                    .getEntityGraph("CarShowroom.withCarAndCategory");
-
-            showrooms = sessionFactory.getCurrentSession()
-                    .createQuery(query)
-                    .setHint("jakarta.persistence.fetchgraph", entityGraph).getResultList();
             transaction.commit();
         } catch (HibernateException e) {
             if (transaction != null) {
@@ -74,7 +59,7 @@ public class CarShowroomServiceImpl implements CarShowroomService {
         Transaction transaction = null;
         CarShowroom carShowroom;
         try {
-            transaction = sessionFactory.getCurrentSession().beginTransaction();
+            transaction = HibernateUtil.openTransaction();
             carShowroom = repository.findById(id);
             transaction.commit();
         } catch (HibernateException e) {
@@ -91,7 +76,7 @@ public class CarShowroomServiceImpl implements CarShowroomService {
         CarShowroom showroomPersist;
         Transaction transaction = null;
         try {
-            transaction = sessionFactory.getCurrentSession().beginTransaction();
+            transaction = HibernateUtil.openTransaction();
             showroomPersist = repository.save(carShowroom);
             transaction.commit();
         } catch (HibernateException e) {
@@ -107,7 +92,7 @@ public class CarShowroomServiceImpl implements CarShowroomService {
     public void delete(UUID id) {
         Transaction transaction = null;
         try {
-            transaction = sessionFactory.getCurrentSession().beginTransaction();
+            transaction = HibernateUtil.openTransaction();
             repository.deleteById(id);
             transaction.commit();
         } catch (HibernateException e) {
@@ -123,7 +108,7 @@ public class CarShowroomServiceImpl implements CarShowroomService {
         Transaction transaction = null;
         CarShowroom showroomUpdated;
         try {
-            transaction = sessionFactory.getCurrentSession().beginTransaction();
+            transaction = HibernateUtil.openTransaction();
             carShowroom.setId(id);
             showroomUpdated = repository.update(carShowroom);
             transaction.commit();

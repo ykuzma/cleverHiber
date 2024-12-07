@@ -12,6 +12,10 @@ war {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
+compileJava {
+    options.compilerArgs << '-parameters'
+}
+
 repositories {
     mavenLocal()
     mavenCentral()

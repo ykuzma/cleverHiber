@@ -4,13 +4,13 @@ import by.kuzma.clever.hiber.HibernateUtil;
 import by.kuzma.clever.hiber.dto.CarDto;
 import by.kuzma.clever.hiber.entity.Car;
 import by.kuzma.clever.hiber.entity.CarShowroom;
+import by.kuzma.clever.hiber.entity.Category;
 import by.kuzma.clever.hiber.mapper.CarMapper;
 import by.kuzma.clever.hiber.repository.CarRepository;
-import by.kuzma.clever.hiber.repository.CarRepositoryImpl;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.HibernateException;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,18 +20,18 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CarServiceImpl implements CarService {
 
-    private final SessionFactory sessionFactory = HibernateUtil.configSessionFactory();
-    private final CarRepository repository = new CarRepositoryImpl();
+    private final EntityManager entityManager;
+    private final CarRepository repository;
     private final CarMapper carMapper;
 
 
     @Override
     public List<CarDto> findAll() {
-        Transaction transaction = null;
+        EntityTransaction transaction = null;
 
         List<CarDto> cars;
         try {
-            transaction = HibernateUtil.openTransaction();
+            transaction = entityManager.getTransaction();
             cars = carMapper.toCarsDto(repository.findAll());
             transaction.commit();
         } catch (HibernateException e) {
@@ -45,7 +45,7 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public List<CarDto> findAllWithPagination(int pageNumber, int pageSize) {
-        Transaction transaction = null;
+        EntityTransaction transaction = null;
 
         List<CarDto> cars;
         try {
@@ -64,7 +64,7 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public CarDto findById(UUID id) {
-        Transaction transaction = null;
+        EntityTransaction transaction = null;
         Car car;
         try {
             transaction = HibernateUtil.openTransaction();
@@ -83,11 +83,11 @@ public class CarServiceImpl implements CarService {
     @Override
     public CarDto addCar(CarDto carDto) {
         CarDto carPersist;
-        Transaction transaction = null;
+        EntityTransaction transaction = null;
         try {
             transaction = HibernateUtil.openTransaction();
             Car car = carMapper.toCar(carDto);
-            car.setCategory(sessionFactory.getCurrentSession().getReference(car.getCategory()));
+            car.setCategory(entityManager.getReference(Category.class, car.getCategory()));
             carPersist = carMapper.toCarDto(repository.save(car));
             transaction.commit();
         } catch (HibernateException e) {
@@ -101,7 +101,7 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public void delete(UUID id) {
-        Transaction transaction = null;
+        EntityTransaction transaction = null;
         try {
             transaction = HibernateUtil.openTransaction();
             repository.deleteById(id);
@@ -116,7 +116,7 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public CarDto update(CarDto carDto, UUID id) {
-        Transaction transaction = null;
+        EntityTransaction transaction = null;
         CarDto carUpdated;
         try {
             transaction = HibernateUtil.openTransaction();
@@ -135,7 +135,7 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public List<CarDto> findCarsByFilters(String brand, String category, int year, double minPrice, double maxPrice) {
-        Transaction transaction = null;
+        EntityTransaction transaction = null;
 
         List<CarDto> cars;
         try {
@@ -156,7 +156,7 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public List<CarDto> findCarsWithSort(boolean isASC) {
-        Transaction transaction = null;
+        EntityTransaction transaction = null;
 
         List<CarDto> cars;
         try {
@@ -175,12 +175,12 @@ public class CarServiceImpl implements CarService {
     }
 
     public void assignCarToShowroom(CarDto carDto, CarShowroom showroom) {
-        Transaction transaction = null;
+        EntityTransaction transaction = null;
 
         try {
             transaction = HibernateUtil.openTransaction();
             Car car = carMapper.toCar(carDto);
-            car.setCarShowroom(sessionFactory.getCurrentSession().getReference(showroom));
+            car.setCarShowroom(entityManager.getReference(CarShowroom.class, showroom));
             car.setId(car.getId());
             repository.update(car);
             transaction.commit();

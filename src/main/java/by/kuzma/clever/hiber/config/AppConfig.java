@@ -1,10 +1,9 @@
 package by.kuzma.clever.hiber.config;
 
-import jakarta.persistence.EntityManagerFactory;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -19,22 +18,19 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.sql.DataSource;
 import java.util.Properties;
 
-
-
 @Configuration
-/*@EnableJpaRepositories(basePackages = "by.kuzma.clever.hiber.repository")*/
-/*@EnableTransactionManagement*/
+@EnableJpaRepositories(basePackages = "by.kuzma.clever.hiber.repository")
+@EnableTransactionManagement
 @ComponentScan("by.kuzma.clever.hiber")
 @PropertySource("classpath:application.properties")
 public class AppConfig {
 
 
-
-    /*@Bean
+    @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource());
-        em.setPackagesToScan("com.game.entity");
+        em.setPackagesToScan("by.kuzma.clever.hiber.entity");
 
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
@@ -54,7 +50,7 @@ public class AppConfig {
         return dataSource;
     }
 
-   *//* @Profile("dev")
+   /* @Profile("dev")
     @Bean(name = "dataSource")
     public DataSource dataSourceForTests() {
 
@@ -65,12 +61,12 @@ public class AppConfig {
                 .ignoreFailedDrops(true)
                 .addScript("test.sql")
                 .build();
-    }*//*
+    }*/
 
     @Bean
-    public PlatformTransactionManager transactionManager(EntityManagerFactory emf) {
+    public PlatformTransactionManager transactionManager() {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(emf);
+        transactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
 
         return transactionManager;
     }
@@ -85,5 +81,5 @@ public class AppConfig {
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
 
         return properties;
-    }*/
+    }
 }

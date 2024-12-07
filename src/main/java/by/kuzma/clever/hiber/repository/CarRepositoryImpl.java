@@ -1,60 +1,62 @@
 package by.kuzma.clever.hiber.repository;
 
-import by.kuzma.clever.hiber.HibernateUtil;
 import by.kuzma.clever.hiber.entity.Car;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.query.Order;
 import org.hibernate.query.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+@Repository
+@RequiredArgsConstructor
 public class CarRepositoryImpl implements CarRepository {
 
-    private final SessionFactory sessionFactory = HibernateUtil.configSessionFactory();
+    private final Session entityManager;
 
 
     @Override
     public Car save(Car car) {
 
-        return sessionFactory.getCurrentSession().merge(car);
+        return entityManager.merge(car);
     }
 
     @Override
     public Car update(Car car) {
-        return sessionFactory.getCurrentSession().merge(car);
+        return entityManager.merge(car);
     }
 
     @Override
     public Car findById(UUID id) {
-        return sessionFactory.getCurrentSession().get(Car.class, id);
+        return entityManager.get(Car.class, id);
     }
 
     @Override
      public List<Car> findAll() {
-        CriteriaQuery<Car> selectQuery = sessionFactory.getCurrentSession().getCriteriaBuilder().createQuery(Car.class);
+        CriteriaQuery<Car> selectQuery = entityManager.getCriteriaBuilder().createQuery(Car.class);
         selectQuery.from(Car.class).fetch("category", JoinType.INNER);
 
-        return sessionFactory.getCurrentSession().createQuery(selectQuery).getResultList();
+        return entityManager.createQuery(selectQuery).getResultList();
     }
 
     @Override
     public void deleteById(UUID id) {
-        Session currentSession = sessionFactory.getCurrentSession();
+        Session currentSession = entityManager;
         currentSession.remove(currentSession.get(Car.class, id));
     }
 
     @Override
     public List<Car> findAllWithPagination(int offset, int limit) {
-        Session currentSession = sessionFactory.getCurrentSession();
+        Session currentSession = entityManager;
         CriteriaQuery<Car> selectQuery = currentSession.getCriteriaBuilder().createQuery(Car.class);
         selectQuery.from(Car.class).fetch("category", JoinType.INNER);
         Query<Car> query = currentSession.createQuery(selectQuery);
@@ -66,7 +68,7 @@ public class CarRepositoryImpl implements CarRepository {
 
     @Override
     public List<Car> findCarWithSort(boolean isASC) {
-        Session currentSession = sessionFactory.getCurrentSession();
+        Session currentSession = entityManager;
         Order<? super Car> order;
         if (isASC) {
             order = Order.asc(Car.class, "price");
@@ -83,7 +85,7 @@ public class CarRepositoryImpl implements CarRepository {
 
     @Override
     public List<Car> findCarsByFilters(String brand, String category, int year, double minPrice, double maxPrice) {
-        CriteriaBuilder cb = sessionFactory.getCurrentSession().getCriteriaBuilder();
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 
         CriteriaQuery<Car> cq2 = cb.createQuery(Car.class);
         Root<Car> root2 = cq2.from(Car.class);
@@ -93,7 +95,7 @@ public class CarRepositoryImpl implements CarRepository {
 
         cq2.select(root2).where(predicate);
 
-        Query<Car> query2 = sessionFactory.getCurrentSession().createQuery(cq2);
+        Query<Car> query2 = entityManager.createQuery(cq2);
         return query2.getResultList();
     }
 

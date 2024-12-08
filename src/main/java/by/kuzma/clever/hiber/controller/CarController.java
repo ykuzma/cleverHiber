@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -21,6 +22,12 @@ public class CarController {
 
     public CarController(CarService service) {
         this.service = service;
+    }
+
+
+    @GetMapping("/")
+    public ResponseEntity<List<CarDto>> findAll() {
+        return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

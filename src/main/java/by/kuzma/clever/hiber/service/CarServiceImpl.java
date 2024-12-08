@@ -32,20 +32,8 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public List<CarDto> findAll() {
-        EntityTransaction transaction = null;
 
-        List<CarDto> cars;
-        try {
-            transaction = HibernateUtil.openTransaction();
-            cars = carMapper.toCarsDto(dao.findAll());
-            transaction.commit();
-        } catch (HibernateException e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw new RuntimeException(e);
-        }
-        return cars;
+        return carMapper.toCarsDto(dao.findAll());
     }
 
     @Override

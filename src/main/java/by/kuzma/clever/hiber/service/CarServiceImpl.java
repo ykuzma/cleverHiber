@@ -8,6 +8,7 @@ import by.kuzma.clever.hiber.entity.Category;
 import by.kuzma.clever.hiber.mapper.CarMapper;
 import by.kuzma.clever.hiber.repository.CarDao;
 import by.kuzma.clever.hiber.repository.CarRepository;
+import by.kuzma.clever.hiber.repository.CategoryRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class CarServiceImpl implements CarService {
     private final EntityManager entityManager;
     private final CarDao dao;
     private final CarRepository repository;
+    private final CategoryRepository categoryRepository;
 
     private final CarMapper carMapper;
 
@@ -33,7 +35,7 @@ public class CarServiceImpl implements CarService {
     @Override
     public List<CarDto> findAll() {
 
-        return carMapper.toCarsDto(dao.findAll());
+        return carMapper.toCarsDto(repository.findAll());
     }
 
     @Override
@@ -65,7 +67,7 @@ public class CarServiceImpl implements CarService {
     public CarDto addCar(CarDto carDto) {
 
         Car car = carMapper.toCar(carDto);
-        /*car.setCategory(repository.getReferenceById(car.getCategory().getId()));*/
+        car.setCategory(categoryRepository.getReferenceById(car.getCategory().getId()));
 
         return carMapper.toCarDto(repository.save(car));
     }

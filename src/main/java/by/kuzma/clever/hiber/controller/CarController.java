@@ -2,6 +2,7 @@ package by.kuzma.clever.hiber.controller;
 
 import by.kuzma.clever.hiber.dto.CarDto;
 import by.kuzma.clever.hiber.service.CarService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,14 +19,10 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/cars")
+@RequiredArgsConstructor
 public class CarController {
 
     private final CarService service;
-
-    public CarController(CarService service) {
-        this.service = service;
-    }
-
 
     @GetMapping("/")
     public ResponseEntity<List<CarDto>> findAll() {

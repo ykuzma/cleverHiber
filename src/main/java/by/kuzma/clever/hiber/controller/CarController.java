@@ -4,6 +4,7 @@ import by.kuzma.clever.hiber.dto.CarDto;
 import by.kuzma.clever.hiber.service.CarService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,6 +48,14 @@ public class CarController {
     public ResponseEntity<CarDto> updateCar(@RequestBody CarDto carDto, @PathVariable UUID id) {
         return new ResponseEntity<>(service.update(carDto, id), HttpStatus.OK);
     }
+
+    @DeleteMapping("/{id}")
+    ResponseEntity<Void> deleteCar(@PathVariable UUID id) {
+        service.delete(id);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+
 
 
 }

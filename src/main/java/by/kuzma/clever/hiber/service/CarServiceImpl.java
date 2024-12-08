@@ -58,38 +58,28 @@ public class CarServiceImpl implements CarService {
     @Override
     public CarDto findById(UUID id) {
 
-             return carMapper.toCarDto(repository.findById(id).orElseThrow());
+        return carMapper.toCarDto(repository.findById(id).orElseThrow());
     }
 
     @Override
     public CarDto addCar(CarDto carDto) {
 
-            Car car = carMapper.toCar(carDto);
-            /*car.setCategory(repository.getReferenceById(car.getCategory().getId()));*/
+        Car car = carMapper.toCar(carDto);
+        /*car.setCategory(repository.getReferenceById(car.getCategory().getId()));*/
 
         return carMapper.toCarDto(repository.save(car));
     }
 
     @Override
     public void delete(UUID id) {
-        EntityTransaction transaction = null;
-        try {
-            transaction = HibernateUtil.openTransaction();
-            dao.deleteById(id);
-            transaction.commit();
-        } catch (HibernateException e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw new RuntimeException(e);
-        }
+        repository.deleteById(id);
     }
 
     @Override
     public CarDto update(CarDto carDto, UUID id) {
 
-            Car car = carMapper.toCar(carDto);
-            car.setId(id);
+        Car car = carMapper.toCar(carDto);
+        car.setId(id);
 
         return carMapper.toCarDto(repository.save(car));
     }

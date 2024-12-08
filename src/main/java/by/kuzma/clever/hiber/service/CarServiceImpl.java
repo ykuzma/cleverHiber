@@ -87,21 +87,11 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public CarDto update(CarDto carDto, UUID id) {
-        EntityTransaction transaction = null;
-        CarDto carUpdated;
-        try {
-            transaction = HibernateUtil.openTransaction();
+
             Car car = carMapper.toCar(carDto);
             car.setId(id);
-            carUpdated = carMapper.toCarDto(dao.update(car));
-            transaction.commit();
-        } catch (HibernateException e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw new RuntimeException(e);
-        }
-        return carUpdated;
+
+        return carMapper.toCarDto(repository.save(car));
     }
 
     @Override

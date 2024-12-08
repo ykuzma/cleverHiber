@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,6 +41,11 @@ public class CarController {
     @PostMapping("/")
     public ResponseEntity<CarDto> addCar(@RequestBody CarDto carDto) {
         return new ResponseEntity<>(service.addCar(carDto), HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CarDto> updateCar(@RequestBody CarDto carDto, @PathVariable UUID id) {
+        return new ResponseEntity<>(service.update(carDto, id), HttpStatus.OK);
     }
 
 

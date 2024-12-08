@@ -1,6 +1,7 @@
 package by.kuzma.clever.hiber.config;
 
 
+import liquibase.integration.spring.SpringLiquibase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -50,18 +51,13 @@ public class AppConfig {
         return dataSource;
     }
 
-   /* @Profile("dev")
-    @Bean(name = "dataSource")
-    public DataSource dataSourceForTests() {
-
-        return new EmbeddedDatabaseBuilder()
-                .generateUniqueName(true)
-                .setType(H2)
-                .setScriptEncoding("UTF-8")
-                .ignoreFailedDrops(true)
-                .addScript("test.sql")
-                .build();
-    }*/
+    @Bean
+    public SpringLiquibase liquibase() {
+        SpringLiquibase liquibase = new SpringLiquibase();
+        liquibase.setChangeLog("classpath:db/changelog/master.yaml");
+        liquibase.setDataSource(dataSource());
+        return liquibase;
+    }
 
     @Bean
     public PlatformTransactionManager transactionManager() {

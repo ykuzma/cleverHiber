@@ -3,10 +3,8 @@ package by.kuzma.clever.hiber.service;
 import by.kuzma.clever.hiber.TestHelper;
 import by.kuzma.clever.hiber.dto.CarDto;
 import by.kuzma.clever.hiber.entity.Car;
-import by.kuzma.clever.hiber.entity.Category;
-import by.kuzma.clever.hiber.mapper.CarMapper;
 import by.kuzma.clever.hiber.mapper.CarMapperImpl;
-import by.kuzma.clever.hiber.repository.CarRepository;
+import by.kuzma.clever.hiber.repository.CarDao;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,7 +24,7 @@ class CarServiceImplTest {
     TestHelper testHelper;
 
     @Mock
-    CarRepository carRepository;
+    CarDao carRepository;
 
     @Spy
     CarMapperImpl carMapper;

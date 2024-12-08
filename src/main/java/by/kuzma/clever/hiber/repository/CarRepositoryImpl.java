@@ -19,7 +19,7 @@ import java.util.UUID;
 
 @Repository
 @RequiredArgsConstructor
-public class CarRepositoryImpl implements CarRepository {
+public class CarRepositoryImpl implements CarDao {
 
     private final Session entityManager;
 

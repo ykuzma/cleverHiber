@@ -5,6 +5,7 @@ import by.kuzma.clever.hiber.dto.CarDto;
 import by.kuzma.clever.hiber.entity.Car;
 import by.kuzma.clever.hiber.entity.CarShowroom;
 import by.kuzma.clever.hiber.entity.Category;
+import by.kuzma.clever.hiber.exception.NotFoundDataException;
 import by.kuzma.clever.hiber.mapper.CarMapper;
 import by.kuzma.clever.hiber.repository.CarDao;
 import by.kuzma.clever.hiber.repository.CarRepository;
@@ -36,6 +37,7 @@ public class CarServiceImpl implements CarService {
     public List<CarDto> findAll() {
 
         return carMapper.toCarsDto(repository.findAll());
+
     }
 
     @Override
@@ -60,7 +62,7 @@ public class CarServiceImpl implements CarService {
     @Override
     public CarDto findById(UUID id) {
 
-        return carMapper.toCarDto(repository.findById(id).orElseThrow());
+        return carMapper.toCarDto(repository.findById(id).orElseThrow(() -> new NotFoundDataException(id)));
     }
 
     @Override

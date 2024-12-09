@@ -1,4 +1,4 @@
-package by.kuzma.clever.hiber.repository;
+package by.kuzma.clever.hiber.repository.dao;
 
 import by.kuzma.clever.hiber.HibernateUtil;
 import by.kuzma.clever.hiber.entity.CarShowroom;
@@ -13,9 +13,9 @@ import org.hibernate.query.criteria.HibernateCriteriaBuilder;
 import java.util.List;
 import java.util.UUID;
 
-public class CarShowroomRepositoryImpl implements CarShowroomRepository {
+public class CarShowroomRepositoryImpl {
 
-    private final SessionFactory sessionFactory = HibernateUtil.configSessionFactory();
+  /*  private final SessionFactory sessionFactory = HibernateUtil.configSessionFactory();
 
     @Override
     public CarShowroom save(CarShowroom carShowroom) {
@@ -56,5 +56,5 @@ public class CarShowroomRepositoryImpl implements CarShowroomRepository {
         return currentSession
                 .createQuery(query)
                 .setHint("jakarta.persistence.fetchgraph", entityGraph).getResultList();
-    }
+    }*/
 }

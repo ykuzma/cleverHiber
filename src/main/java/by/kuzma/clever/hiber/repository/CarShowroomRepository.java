@@ -1,17 +1,15 @@
 package by.kuzma.clever.hiber.repository;
 
 import by.kuzma.clever.hiber.entity.CarShowroom;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
-import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
-public interface CarShowroomRepository {
+public interface CarShowroomRepository extends JpaRepository<CarShowroom, UUID> {
 
-    CarShowroom save(CarShowroom carShowroom);
-    List<CarShowroom> findAll();
-    CarShowroom findById(UUID id);
-    void deleteById(UUID id);
-    CarShowroom update(CarShowroom carShowroom);
-
-    List<CarShowroom> getShowroomWithAllCars();
+    @Override
+    @Query("select cs from CarShowroom cs left join fetch cs.cars where cs.id= :uuid")
+    Optional<CarShowroom> findById(UUID uuid);
 }

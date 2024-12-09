@@ -1,43 +1,35 @@
 package by.kuzma.clever.hiber.service;
 
-import by.kuzma.clever.hiber.HibernateUtil;
+import by.kuzma.clever.hiber.dto.CarShowroomFindAllResponse;
+import by.kuzma.clever.hiber.dto.CarShowroomRequest;
+import by.kuzma.clever.hiber.dto.CarShowroomResponse;
 import by.kuzma.clever.hiber.entity.CarShowroom;
+import by.kuzma.clever.hiber.mapper.CarShowroomMapper;
 import by.kuzma.clever.hiber.repository.CarShowroomRepository;
-import org.hibernate.HibernateException;
-import org.hibernate.Transaction;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
 
+@Service
+@Transactional
+@RequiredArgsConstructor
 public class CarShowroomServiceImpl implements CarShowroomService {
 
     private final CarShowroomRepository repository;
+    private final CarShowroomMapper mapper;
 
-    public CarShowroomServiceImpl(CarShowroomRepository repository) {
-        this.repository = repository;
+    @Override
+    public List<CarShowroomFindAllResponse> findAll() {
+
+        return mapper.toAllResponses(repository.findAll());
     }
 
     @Override
-    public List<CarShowroom> findAll() {
-        Transaction transaction = null;
-
-        List<CarShowroom> showrooms;
-        try {
-            transaction = HibernateUtil.openTransaction();
-            showrooms = repository.findAll();
-            transaction.commit();
-        } catch (HibernateException e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw new RuntimeException(e);
-        }
-        return showrooms;
-    }
-
-    @Override
-    public List<CarShowroom> getShowroomWithAllCars() {
-        Transaction transaction = null;
+    public List<CarShowroomResponse> getShowroomWithAllCars() {
+       /* Transaction transaction = null;
 
         List<CarShowroom> showrooms;
         try {
@@ -50,75 +42,33 @@ public class CarShowroomServiceImpl implements CarShowroomService {
                 transaction.rollback();
             }
             throw new RuntimeException(e);
-        }
-        return showrooms;
+        }*/
+        return null;
     }
 
     @Override
-    public CarShowroom findById(UUID id) {
-        Transaction transaction = null;
-        CarShowroom carShowroom;
-        try {
-            transaction = HibernateUtil.openTransaction();
-            carShowroom = repository.findById(id);
-            transaction.commit();
-        } catch (HibernateException e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw new RuntimeException(e);
-        }
-        return carShowroom;
+    public CarShowroomResponse findById(UUID id) {
+        CarShowroom carShowroom = repository.findById(id).orElseThrow();
+
+        return mapper.toResponse(carShowroom);
     }
 
     @Override
-    public CarShowroom addShowroom(CarShowroom carShowroom) {
-        CarShowroom showroomPersist;
-        Transaction transaction = null;
-        try {
-            transaction = HibernateUtil.openTransaction();
-            showroomPersist = repository.save(carShowroom);
-            transaction.commit();
-        } catch (HibernateException e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw new RuntimeException(e);
-        }
-        return showroomPersist;
+    public CarShowroomResponse addShowroom(CarShowroomRequest carShowroom) {
+        return mapper.toResponse(repository.save(mapper.requestToEntity(carShowroom)));
     }
 
     @Override
     public void delete(UUID id) {
-        Transaction transaction = null;
-        try {
-            transaction = HibernateUtil.openTransaction();
-            repository.deleteById(id);
-            transaction.commit();
-        } catch (HibernateException e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw new RuntimeException(e);
-        }
+        repository.deleteById(id);
     }
 
     @Override
-    public CarShowroom update(CarShowroom carShowroom, UUID id) {
-        Transaction transaction = null;
-        CarShowroom showroomUpdated;
-        try {
-            transaction = HibernateUtil.openTransaction();
-            carShowroom.setId(id);
-            showroomUpdated = repository.update(carShowroom);
-            transaction.commit();
-        } catch (HibernateException e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw new RuntimeException(e);
-        }
-        return showroomUpdated;
+    public CarShowroomResponse update(CarShowroomRequest carShowroomRequest, UUID id) {
+
+        CarShowroom carShowroom = mapper.requestToEntity(carShowroomRequest);
+
+        return mapper.toResponse(repository.save(carShowroom));
     }
 
 }

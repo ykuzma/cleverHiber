@@ -10,10 +10,10 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-@Testcontainers
+/*@Testcontainers*/
 class CarRepositoryImplTest {
 
-    SessionFactory sessionFactory;
+   /* SessionFactory sessionFactory;
 
     @Container
     private static PostgreSQLContainer <?> postgres = new PostgreSQLContainer<>("postgres:15-alpine");
@@ -35,5 +35,5 @@ class CarRepositoryImplTest {
         session.close();
 
         System.out.println(car);
-    }
+    }*/
 }

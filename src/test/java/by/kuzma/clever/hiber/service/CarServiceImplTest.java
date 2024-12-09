@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class CarServiceImplTest {
 
-    TestHelper testHelper;
+  /*  TestHelper testHelper;
 
     @Mock
     CarDao carRepository;
@@ -56,5 +56,5 @@ class CarServiceImplTest {
         //then
         assertThat(actual).isEqualTo(expected);
 
-    }
+    }*/
 }

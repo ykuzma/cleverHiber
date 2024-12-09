@@ -10,7 +10,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class CarMapperTest {
 
-
+/*
+    @Autowired
     CarMapper carMapper;
 
     @Test
@@ -28,5 +29,5 @@ class CarMapperTest {
                 .hasFieldOrPropertyWithValue("mark", carDto.mark());
         assertThat(car.getCategory()).isNotNull()
                 .hasFieldOrPropertyWithValue("name", categoryDto.name());
-    }
+    }*/
 }

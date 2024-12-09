@@ -2,6 +2,8 @@ package by.kuzma.clever.hiber.controller;
 
 import by.kuzma.clever.hiber.dto.CategoryDto;
 import by.kuzma.clever.hiber.service.CategoryService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,23 +32,23 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CategoryDto> getCategory(@PathVariable UUID id) {
+    public ResponseEntity<CategoryDto> getCategory(@PathVariable @NotNull UUID id) {
 
         return new ResponseEntity<>(service.findById(id), HttpStatus.OK);
     }
 
     @PostMapping("/")
-    public ResponseEntity<CategoryDto> addCategory(@RequestBody CategoryDto categoryDto) {
+    public ResponseEntity<CategoryDto> addCategory(@RequestBody @Valid CategoryDto categoryDto) {
         return new ResponseEntity<>(service.addCategory(categoryDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CategoryDto> updateCategory(@RequestBody CategoryDto categoryDto, @PathVariable UUID id) {
+    public ResponseEntity<CategoryDto> updateCategory(@RequestBody @ Valid CategoryDto categoryDto, @PathVariable @NotNull UUID id) {
         return new ResponseEntity<>(service.update(categoryDto, id), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    ResponseEntity<Void> deleteCategory(@PathVariable UUID id) {
+    ResponseEntity<Void> deleteCategory(@PathVariable @ NotNull UUID id) {
         service.delete(id);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }

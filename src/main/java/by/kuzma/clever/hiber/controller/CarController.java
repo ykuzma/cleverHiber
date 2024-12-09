@@ -2,6 +2,8 @@ package by.kuzma.clever.hiber.controller;
 
 import by.kuzma.clever.hiber.dto.CarDto;
 import by.kuzma.clever.hiber.service.CarService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,24 +32,24 @@ public class CarController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CarDto> getCar(@PathVariable UUID id) {
+    public ResponseEntity<CarDto> getCar(@PathVariable @NotNull UUID id) {
 
         CarDto carDto = service.findById(id);
         return new ResponseEntity<>(carDto, HttpStatus.OK);
     }
 
     @PostMapping("/")
-    public ResponseEntity<CarDto> addCar(@RequestBody CarDto carDto) {
+    public ResponseEntity<CarDto> addCar(@RequestBody @Valid CarDto carDto) {
         return new ResponseEntity<>(service.addCar(carDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CarDto> updateCar(@RequestBody CarDto carDto, @PathVariable UUID id) {
+    public ResponseEntity<CarDto> updateCar(@RequestBody @Valid CarDto carDto, @PathVariable @NotNull UUID id) {
         return new ResponseEntity<>(service.update(carDto, id), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    ResponseEntity<Void> deleteCar(@PathVariable UUID id) {
+    ResponseEntity<Void> deleteCar(@PathVariable @NotNull UUID id) {
         service.delete(id);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }

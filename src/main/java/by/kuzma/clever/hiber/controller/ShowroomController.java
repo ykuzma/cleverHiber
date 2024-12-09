@@ -4,6 +4,8 @@ import by.kuzma.clever.hiber.dto.CarShowroomFindAllResponse;
 import by.kuzma.clever.hiber.dto.CarShowroomRequest;
 import by.kuzma.clever.hiber.dto.CarShowroomResponse;
 import by.kuzma.clever.hiber.service.CarShowroomService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,28 +29,28 @@ public class ShowroomController {
     private final CarShowroomService service;
 
     @GetMapping("/")
-    public ResponseEntity<List<CarShowroomFindAllResponse>> findAll() {
+    public ResponseEntity<List<@Valid CarShowroomFindAllResponse>> findAll() {
         return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CarShowroomResponse> getShowroom(@PathVariable UUID id) {
+    public ResponseEntity<CarShowroomResponse> getShowroom(@PathVariable @NotNull UUID id) {
 
         return new ResponseEntity<>(service.findById(id), HttpStatus.OK);
     }
 
     @PostMapping("/")
-    public ResponseEntity<CarShowroomResponse> addShowroom(@RequestBody CarShowroomRequest showroomRequest) {
+    public ResponseEntity<@Valid CarShowroomResponse> addShowroom(@RequestBody @Valid CarShowroomRequest showroomRequest) {
         return new ResponseEntity<>(service.addShowroom(showroomRequest), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CarShowroomResponse> updateShowroom(@RequestBody CarShowroomRequest showroomRequest, @PathVariable UUID id) {
+    public ResponseEntity<@Valid CarShowroomResponse> updateShowroom(@RequestBody @Valid CarShowroomRequest showroomRequest, @PathVariable @NotNull UUID id) {
         return new ResponseEntity<>(service.update(showroomRequest, id), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    ResponseEntity<Void> deleteShowroom(@PathVariable UUID id) {
+    ResponseEntity<Void> deleteShowroom(@PathVariable @NotNull UUID id) {
         service.delete(id);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }

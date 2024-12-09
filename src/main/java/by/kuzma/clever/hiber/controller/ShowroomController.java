@@ -48,7 +48,7 @@ public class ShowroomController {
     }
 
     @DeleteMapping("/{id}")
-    ResponseEntity<Void> deleteCar(@PathVariable UUID id) {
+    ResponseEntity<Void> deleteShowroom(@PathVariable UUID id) {
         service.delete(id);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }

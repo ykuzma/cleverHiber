@@ -41,12 +41,12 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CategoryDto> updateCar(@RequestBody CategoryDto categoryDto, @PathVariable UUID id) {
+    public ResponseEntity<CategoryDto> updateCategory(@RequestBody CategoryDto categoryDto, @PathVariable UUID id) {
         return new ResponseEntity<>(service.update(categoryDto, id), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    ResponseEntity<Void> deleteCar(@PathVariable UUID id) {
+    ResponseEntity<Void> deleteCategory(@PathVariable UUID id) {
         service.delete(id);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }

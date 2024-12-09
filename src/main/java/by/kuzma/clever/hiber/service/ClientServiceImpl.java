@@ -1,124 +1,67 @@
 package by.kuzma.clever.hiber.service;
 
-import by.kuzma.clever.hiber.HibernateUtil;
-import by.kuzma.clever.hiber.entity.Car;
+import by.kuzma.clever.hiber.dto.ClientBuyCar;
+import by.kuzma.clever.hiber.dto.ClientDto;
 import by.kuzma.clever.hiber.entity.Client;
+import by.kuzma.clever.hiber.mapper.CarMapper;
+import by.kuzma.clever.hiber.mapper.ClientMapper;
+import by.kuzma.clever.hiber.repository.CarRepository;
 import by.kuzma.clever.hiber.repository.ClientRepository;
-import org.hibernate.HibernateException;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
 
+@Service
+@Transactional
+@RequiredArgsConstructor
 public class ClientServiceImpl implements ClientService {
     private final ClientRepository repository;
-    private final SessionFactory sessionFactory = HibernateUtil.configSessionFactory();
 
-    public ClientServiceImpl(ClientRepository repository) {
-        this.repository = repository;
+    private final CarRepository carRepository;
+    private final ClientMapper mapper;
+    private final CarMapper carMapper;
+
+    @Override
+    public List<ClientDto> findAll() {
+
+        return mapper.toDtos(repository.findAll());
     }
 
     @Override
-    public List<Client> findAll() {
-        Transaction transaction = null;
+    public ClientDto findById(UUID id) {
 
-        List<Client> clients;
-        try {
-            transaction = HibernateUtil.openTransaction();
-            clients = repository.findAll();
-            transaction.commit();
-        } catch (HibernateException e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw new RuntimeException(e);
-        }
-        return clients;
+        return mapper.toDto(repository.findById(id).orElseThrow());
     }
 
     @Override
-    public Client findById(UUID id) {
-        Transaction transaction = null;
-        Client client;
-        try {
-            transaction = HibernateUtil.openTransaction();
-            client = repository.findById(id);
-            transaction.commit();
-        } catch (HibernateException e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw new RuntimeException(e);
-        }
-        return client;
-    }
-
-    @Override
-    public Client addClient(Client client) {
-        Client clientPersist;
-        Transaction transaction = null;
-        try {
-            transaction = HibernateUtil.openTransaction();
-            clientPersist = repository.save(client);
-            transaction.commit();
-        } catch (HibernateException e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw new RuntimeException(e);
-        }
-        return clientPersist;
+    public ClientDto addClient(ClientDto client) {
+        return mapper.toDto(repository.save(mapper.toEntity(client)));
     }
 
     @Override
     public void delete(UUID id) {
-        Transaction transaction = null;
-        try {
-            transaction = HibernateUtil.openTransaction();
-            repository.deleteById(id);
-            transaction.commit();
-        } catch (HibernateException e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw new RuntimeException(e);
-        }
+
+        repository.deleteById(id);
+
     }
 
     @Override
-    public Client update(Client client, UUID id) {
-        Transaction transaction = null;
-        Client clientUpdated;
-        try {
-            transaction = HibernateUtil.openTransaction();
-            client.setId(id);
-            clientUpdated = repository.update(client);
-            transaction.commit();
-        } catch (HibernateException e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw new RuntimeException(e);
-        }
-        return clientUpdated;
+    public ClientDto update(ClientDto clientDto, UUID id) {
+        Client client = mapper.toEntity(clientDto);
+        client.setId(id);
+
+        return mapper.toDto(repository.save(client));
     }
 
     @Override
-    public void buyCar(Client client, Car car) {
-        Transaction transaction = null;
+    public void buyCar(ClientBuyCar buyCar) {
+        Client client = mapper.buyCarToEntity(buyCar);
 
-        try {
-            transaction = HibernateUtil.openTransaction();
+        client = repository.findById(client.getId()).orElseThrow();
+        client.addCar(carRepository.getReferenceById(buyCar.cars().get(0).id()));
 
-            Client byId = repository.findById(client.getId());
-            byId.addCar(sessionFactory.getCurrentSession().getReference(car));
-            transaction.commit();
-        } catch (HibernateException e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw new RuntimeException(e);
-        }
     }
 }

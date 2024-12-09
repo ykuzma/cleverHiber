@@ -1,117 +1,62 @@
 package by.kuzma.clever.hiber.service;
 
-import by.kuzma.clever.hiber.HibernateUtil;
-import by.kuzma.clever.hiber.entity.Car;
-import by.kuzma.clever.hiber.entity.Client;
+import by.kuzma.clever.hiber.dto.ReviewDto;
 import by.kuzma.clever.hiber.entity.Review;
+import by.kuzma.clever.hiber.mapper.ReviewMapper;
 import by.kuzma.clever.hiber.repository.ReviewRepository;
-import org.hibernate.HibernateException;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.search.mapper.orm.Search;
-import org.hibernate.search.mapper.orm.session.SearchSession;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
 
+@Service
+@Transactional
+@RequiredArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
 
-    private final SessionFactory sessionFactory = HibernateUtil.configSessionFactory();
     private final ReviewRepository repository;
+    private final ReviewMapper mapper;
 
-    public ReviewServiceImpl(ReviewRepository repository) {
-        this.repository = repository;
+
+    @Override
+    public List<ReviewDto> findAll() {
+
+        return mapper.toDtos(repository.findAll());
     }
 
     @Override
-    public List<Review> findAll() {
-        Transaction transaction = null;
+    public ReviewDto findById(UUID id) {
 
-        List<Review> reviews;
-        try {
-            transaction = HibernateUtil.openTransaction();
-            reviews = repository.findAll();
-            transaction.commit();
-        } catch (HibernateException e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw new RuntimeException(e);
-        }
-        return reviews;
+        return mapper.toDto(repository.findById(id).orElseThrow());
     }
 
     @Override
-    public Review findById(UUID id) {
-        Transaction transaction = null;
-        Review review;
-        try {
-            transaction = HibernateUtil.openTransaction();
-            review = repository.findById(id);
-            transaction.commit();
-        } catch (HibernateException e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw new RuntimeException(e);
-        }
-        return review;
-    }
+    public ReviewDto addReview(ReviewDto reviewDto) {
 
-    @Override
-    public Review addReview(Client client, Car car, String text, int rating) {
-        Review reviewPersist;
-        Transaction transaction = null;
-        try {
-            transaction = HibernateUtil.openTransaction();
-            Review review = Review.builder().car(car).client(client).content(text).rank(rating).build();
-            reviewPersist = repository.save(review);
-            transaction.commit();
-        } catch (HibernateException e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw new RuntimeException(e);
-        }
-        return reviewPersist;
+
+        return mapper.toDto(repository.save(mapper.toEntity(reviewDto)));
     }
 
     @Override
     public void delete(UUID id) {
-        Transaction transaction = null;
-        try {
-            transaction = HibernateUtil.openTransaction();
-            repository.deleteById(id);
-            transaction.commit();
-        } catch (HibernateException e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw new RuntimeException(e);
-        }
+
+        repository.deleteById(id);
+
     }
 
     @Override
-    public Review update(Review client, UUID id) {
-        Transaction transaction = null;
-        Review reviewUpdated;
-        try {
-            transaction = HibernateUtil.openTransaction();
-            client.setId(id);
-            reviewUpdated = repository.update(client);
-            transaction.commit();
-        } catch (HibernateException e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw new RuntimeException(e);
-        }
-        return reviewUpdated;
+    public ReviewDto update(ReviewDto reviewDto, UUID id) {
+        Review review = mapper.toEntity(reviewDto);
+        review.setId(id);
+
+        return mapper.toDto(repository.save(review));
     }
 
     @Override
     public List<Review> fullTextSearch(String predicate) {
-        Transaction transaction = null;
+      /*  Transaction transaction = null;
         List<Review> result;
         try {
             transaction = HibernateUtil.openTransaction();
@@ -123,11 +68,11 @@ public class ReviewServiceImpl implements ReviewService {
             }
             throw new RuntimeException(e);
         }
-
-        return result;
+*/
+        return null;
     }
 
-    private List<Review> getReviews(String predicate) {
+/*    private List<Review> getReviews(String predicate) {
         SearchSession searchSession = Search.session(sessionFactory.getCurrentSession());
         List<Review> result;
         result = searchSession.search(Review.class)
@@ -136,7 +81,7 @@ public class ReviewServiceImpl implements ReviewService {
                         .matching(predicate))
                 .fetchAllHits();
         return result;
-    }
+    }*/
 
 
 }

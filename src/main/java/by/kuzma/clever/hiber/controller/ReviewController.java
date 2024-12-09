@@ -1,14 +1,12 @@
 package by.kuzma.clever.hiber.controller;
 
-import by.kuzma.clever.hiber.dto.ClientBuyCar;
-import by.kuzma.clever.hiber.dto.ClientDto;
-import by.kuzma.clever.hiber.service.ClientService;
+import by.kuzma.clever.hiber.dto.ReviewDto;
+import by.kuzma.clever.hiber.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -20,42 +18,37 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/clients")
+@RequestMapping("/reviews")
 @RequiredArgsConstructor
-public class ClientController {
+public class ReviewController {
 
-    private final ClientService service;
+    private final ReviewService service;
 
     @GetMapping("/")
-    public ResponseEntity<List<ClientDto>> findAll() {
+    public ResponseEntity<List<ReviewDto>> findAll() {
         return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ClientDto> getClient(@PathVariable UUID id) {
+    public ResponseEntity<ReviewDto> getReview(@PathVariable UUID id) {
 
         return new ResponseEntity<>(service.findById(id), HttpStatus.OK);
     }
 
     @PostMapping("/")
-    public ResponseEntity<ClientDto> addClient(@RequestBody ClientDto clientDto) {
-        return new ResponseEntity<>(service.addClient(clientDto), HttpStatus.CREATED);
+    public ResponseEntity<ReviewDto> addReview(@RequestBody ReviewDto reviewDto) {
+        return new ResponseEntity<>(service.addReview(reviewDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ClientDto> updateClient(@RequestBody ClientDto clientDto, @PathVariable UUID id) {
-        return new ResponseEntity<>(service.update(clientDto, id), HttpStatus.OK);
+    public ResponseEntity<ReviewDto> updateReview(@RequestBody ReviewDto reviewDto, @PathVariable UUID id) {
+        return new ResponseEntity<>(service.update(reviewDto, id), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    ResponseEntity<Void> deleteClient(@PathVariable UUID id) {
+    ResponseEntity<Void> deleteReview(@PathVariable UUID id) {
         service.delete(id);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
-    @PatchMapping("/car")
-    ResponseEntity<Void> buyCar(@RequestBody ClientBuyCar buyCar) {
-        service.buyCar(buyCar);
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
-    }
 }

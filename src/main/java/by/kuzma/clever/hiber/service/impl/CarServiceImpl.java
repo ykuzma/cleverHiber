@@ -1,4 +1,4 @@
-package by.kuzma.clever.hiber.service;
+package by.kuzma.clever.hiber.service.impl;
 
 import by.kuzma.clever.hiber.HibernateUtil;
 import by.kuzma.clever.hiber.dto.CarDto;
@@ -10,6 +10,7 @@ import by.kuzma.clever.hiber.mapper.CarMapper;
 import by.kuzma.clever.hiber.repository.CarDao;
 import by.kuzma.clever.hiber.repository.CarRepository;
 import by.kuzma.clever.hiber.repository.CategoryRepository;
+import by.kuzma.clever.hiber.service.CarService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import lombok.RequiredArgsConstructor;

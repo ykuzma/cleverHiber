@@ -1,9 +1,10 @@
-package by.kuzma.clever.hiber.service;
+package by.kuzma.clever.hiber.service.impl;
 
 import by.kuzma.clever.hiber.dto.CategoryDto;
 import by.kuzma.clever.hiber.entity.Category;
 import by.kuzma.clever.hiber.mapper.CategoryMapper;
 import by.kuzma.clever.hiber.repository.CategoryRepository;
+import by.kuzma.clever.hiber.service.CategoryService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

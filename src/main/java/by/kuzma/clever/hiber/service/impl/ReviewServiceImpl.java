@@ -1,9 +1,10 @@
-package by.kuzma.clever.hiber.service;
+package by.kuzma.clever.hiber.service.impl;
 
 import by.kuzma.clever.hiber.dto.ReviewDto;
 import by.kuzma.clever.hiber.entity.Review;
 import by.kuzma.clever.hiber.mapper.ReviewMapper;
 import by.kuzma.clever.hiber.repository.ReviewRepository;
+import by.kuzma.clever.hiber.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,4 +1,4 @@
-package by.kuzma.clever.hiber.service;
+package by.kuzma.clever.hiber.service.impl;
 
 import by.kuzma.clever.hiber.dto.CarShowroomFindAllResponse;
 import by.kuzma.clever.hiber.dto.CarShowroomRequest;
@@ -6,6 +6,7 @@ import by.kuzma.clever.hiber.dto.CarShowroomResponse;
 import by.kuzma.clever.hiber.entity.CarShowroom;
 import by.kuzma.clever.hiber.mapper.CarShowroomMapper;
 import by.kuzma.clever.hiber.repository.CarShowroomRepository;
+import by.kuzma.clever.hiber.service.CarShowroomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

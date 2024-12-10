@@ -11,6 +11,12 @@ version '1.0-SNAPSHOT'
 
 war {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+}
+task explodedWar(type: Sync) {
+    into "${buildDir}/exploded"
+    with war
+
 }
 
 compileJava {

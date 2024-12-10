@@ -31,6 +31,7 @@ public class ExceptionController extends ResponseEntityExceptionHandler {
 
       @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponse> serverInternal(Exception exception) {
+          System.out.println(exception.getClass());
         ExceptionResponse exceptionResponse = new ExceptionResponse(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value());
         return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -39,7 +40,10 @@ public class ExceptionController extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         StringBuilder sb = new StringBuilder();
         for (FieldError error : ex.getBindingResult().getFieldErrors()) {
-            sb.append(error.getField() + ": " + error.getDefaultMessage()).append("\n");
+            sb.append(error.getField())
+                    .append(": ")
+                    .append(error.getDefaultMessage())
+                    .append("\n");
         }
         ExceptionResponse exceptionResponse = new ExceptionResponse(sb.toString(), status.value());
         return handleExceptionInternal(ex, exceptionResponse, headers, status, request);

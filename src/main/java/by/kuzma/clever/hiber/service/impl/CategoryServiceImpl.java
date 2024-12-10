@@ -2,6 +2,7 @@ package by.kuzma.clever.hiber.service.impl;
 
 import by.kuzma.clever.hiber.dto.CategoryDto;
 import by.kuzma.clever.hiber.entity.Category;
+import by.kuzma.clever.hiber.exception.NotFoundDataException;
 import by.kuzma.clever.hiber.mapper.CategoryMapper;
 import by.kuzma.clever.hiber.repository.CategoryRepository;
 import by.kuzma.clever.hiber.service.CategoryService;
@@ -28,7 +29,8 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto findById(UUID id) {
 
-        return mapper.toCategoryDto(repository.findById(id).orElseThrow());
+        return mapper.toCategoryDto(repository.findById(id)
+                .orElseThrow(() -> new NotFoundDataException(id, Category.class)));
     }
 
     @Override
@@ -38,6 +40,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void delete(UUID id) {
+        if(!repository.existsById(id)) {
+            throw new NotFoundDataException(id, Category.class);
+        }
         repository.deleteById(id);
     }
 

@@ -12,6 +12,7 @@ import by.kuzma.clever.hiber.repository.CarRepository;
 import by.kuzma.clever.hiber.repository.CategoryRepository;
 import by.kuzma.clever.hiber.service.CarService;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.EntityTransaction;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.HibernateException;
@@ -63,20 +64,27 @@ public class CarServiceImpl implements CarService {
     @Override
     public CarDto findById(UUID id) {
 
-        return carMapper.toCarDto(repository.findById(id).orElseThrow(() -> new NotFoundDataException(id)));
+        return carMapper.toCarDto(repository.findById(id).orElseThrow(() -> new NotFoundDataException(id, Car.class)));
     }
 
     @Override
     public CarDto addCar(CarDto carDto) {
 
-        Car car = carMapper.toCar(carDto);
-        car.setCategory(categoryRepository.getReferenceById(car.getCategory().getId()));
+        try {
+            Car car = carMapper.toCar(carDto);
+            car.setCategory(categoryRepository.getReferenceById(car.getCategory().getId()));
 
-        return carMapper.toCarDto(repository.save(car));
+            return carMapper.toCarDto(repository.save(car));
+        } catch (EntityNotFoundException e) {
+            throw new NotFoundDataException(e.getMessage(), e);
+        }
     }
 
     @Override
     public void delete(UUID id) {
+        if(!repository.existsById(id)) {
+            throw new NotFoundDataException(id, Car.class);
+        }
         repository.deleteById(id);
     }
 

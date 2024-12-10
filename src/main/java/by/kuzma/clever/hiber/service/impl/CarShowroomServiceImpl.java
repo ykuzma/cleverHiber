@@ -4,6 +4,7 @@ import by.kuzma.clever.hiber.dto.CarShowroomFindAllResponse;
 import by.kuzma.clever.hiber.dto.CarShowroomRequest;
 import by.kuzma.clever.hiber.dto.CarShowroomResponse;
 import by.kuzma.clever.hiber.entity.CarShowroom;
+import by.kuzma.clever.hiber.exception.NotFoundDataException;
 import by.kuzma.clever.hiber.mapper.CarShowroomMapper;
 import by.kuzma.clever.hiber.repository.CarShowroomRepository;
 import by.kuzma.clever.hiber.service.CarShowroomService;
@@ -49,7 +50,8 @@ public class CarShowroomServiceImpl implements CarShowroomService {
 
     @Override
     public CarShowroomResponse findById(UUID id) {
-        CarShowroom carShowroom = repository.findById(id).orElseThrow();
+        CarShowroom carShowroom = repository.findById(id)
+                .orElseThrow(() -> new NotFoundDataException(id, CarShowroom.class));
 
         return mapper.toResponse(carShowroom);
     }
@@ -61,6 +63,9 @@ public class CarShowroomServiceImpl implements CarShowroomService {
 
     @Override
     public void delete(UUID id) {
+        if(!repository.existsById(id)) {
+            throw new NotFoundDataException(id, CarShowroom.class);
+        }
         repository.deleteById(id);
     }
 

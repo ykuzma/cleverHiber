@@ -7,8 +7,8 @@ public class NotFoundDataException extends RuntimeException{
     public NotFoundDataException() {
     }
 
-    public NotFoundDataException(UUID id) {
-        super("Product with id: " + id + " not found");
+    public NotFoundDataException(UUID id, Class<?> clazz) {
+        super(String.format("%s with id: %s not found", clazz.getSimpleName(), id));
     }
 
     public NotFoundDataException(String message, Throwable cause) {

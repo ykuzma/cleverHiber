@@ -2,8 +2,9 @@ package by.kuzma.clever.hiber.service.impl;
 
 import by.kuzma.clever.hiber.dto.ClientBuyCar;
 import by.kuzma.clever.hiber.dto.ClientDto;
+import by.kuzma.clever.hiber.entity.Car;
 import by.kuzma.clever.hiber.entity.Client;
-import by.kuzma.clever.hiber.mapper.CarMapper;
+import by.kuzma.clever.hiber.exception.NotFoundDataException;
 import by.kuzma.clever.hiber.mapper.ClientMapper;
 import by.kuzma.clever.hiber.repository.CarRepository;
 import by.kuzma.clever.hiber.repository.ClientRepository;
@@ -23,7 +24,7 @@ public class ClientServiceImpl implements ClientService {
 
     private final CarRepository carRepository;
     private final ClientMapper mapper;
-    private final CarMapper carMapper;
+
 
     @Override
     public List<ClientDto> findAll() {
@@ -44,7 +45,9 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public void delete(UUID id) {
-
+        if(!repository.existsById(id)) {
+            throw new NotFoundDataException(id, Client.class);
+        }
         repository.deleteById(id);
 
     }
@@ -61,8 +64,12 @@ public class ClientServiceImpl implements ClientService {
     public void buyCar(ClientBuyCar buyCar) {
         Client client = mapper.buyCarToEntity(buyCar);
 
-        client = repository.findById(client.getId()).orElseThrow();
-        client.addCar(carRepository.getReferenceById(buyCar.cars().get(0).id()));
+        client = repository.findById(client.getId())
+                .orElseThrow(() -> new NotFoundDataException(buyCar.id(), Client.class));
+        UUID carID = buyCar.cars().get(0).id();
+        Car car = carRepository.findById(carID)
+                .orElseThrow(() -> new NotFoundDataException(carID, Car.class));
+        client.addCar(car);
 
     }
 }

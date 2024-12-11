@@ -4,6 +4,7 @@ import by.kuzma.clever.hiber.dto.CarDto;
 import by.kuzma.clever.hiber.dto.CarShowroomRequest;
 import by.kuzma.clever.hiber.service.CarService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -33,6 +35,11 @@ public class CarController {
         return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
     }
 
+    @GetMapping("/filter")
+    public ResponseEntity<List<CarDto>> findAllFilter(@RequestParam(defaultValue = "1") @Min(1) int numberPage,
+                                                      @RequestParam(defaultValue = "2") @Min(1) int pageSize) {
+        return new ResponseEntity<>(service.findWithPagination(numberPage, pageSize), HttpStatus.OK);
+    }
     @GetMapping("/{id}")
     public ResponseEntity<CarDto> getCar(@PathVariable @NotNull UUID id) {
 

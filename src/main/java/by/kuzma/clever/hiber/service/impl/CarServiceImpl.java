@@ -11,6 +11,7 @@ import by.kuzma.clever.hiber.repository.CategoryRepository;
 import by.kuzma.clever.hiber.service.CarService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +35,12 @@ public class CarServiceImpl implements CarService {
 
         return carMapper.toCarsDto(repository.findAll());
 
+    }
+
+    @Override
+    public List<CarDto> findWithPagination(int pageNumber, int pageSize) {
+
+        return carMapper.toCarsDto(repository.findAll(PageRequest.of(pageNumber, pageSize)).getContent());
     }
 
 

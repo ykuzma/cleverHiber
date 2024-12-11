@@ -12,6 +12,8 @@ public interface CarService {
 
     List<CarDto> findAll();
 
+    List<CarDto> findWithPagination(int pageNumber, int pageSize);
+
 
     CarDto findById(UUID id);
 

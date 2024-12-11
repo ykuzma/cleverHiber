@@ -16,5 +16,5 @@ public interface ReviewService {
     void delete(UUID id);
     ReviewDto update(ReviewDto client, UUID id);
 
-    List<Review> fullTextSearch(String predicate);
+
 }

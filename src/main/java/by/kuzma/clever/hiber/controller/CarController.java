@@ -1,6 +1,7 @@
 package by.kuzma.clever.hiber.controller;
 
 import by.kuzma.clever.hiber.dto.CarDto;
+import by.kuzma.clever.hiber.dto.CarShowroomRequest;
 import by.kuzma.clever.hiber.service.CarService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -9,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -48,10 +50,16 @@ public class CarController {
         return new ResponseEntity<>(service.update(carDto, id), HttpStatus.OK);
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<Void> assignCar(@RequestBody @Valid CarShowroomRequest showroom, @PathVariable @NotNull UUID id) {
+        service.assignCarToShowroom(showroom, id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
     @DeleteMapping("/{id}")
     ResponseEntity<Void> deleteCar(@PathVariable @NotNull UUID id) {
         service.delete(id);
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 

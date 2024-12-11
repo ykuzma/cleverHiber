@@ -1,6 +1,7 @@
 package by.kuzma.clever.hiber.service;
 
 import by.kuzma.clever.hiber.dto.CarDto;
+import by.kuzma.clever.hiber.dto.CarShowroomRequest;
 import by.kuzma.clever.hiber.entity.Car;
 import by.kuzma.clever.hiber.entity.CarShowroom;
 
@@ -11,7 +12,6 @@ public interface CarService {
 
     List<CarDto> findAll();
 
-    List<CarDto> findAllWithPagination(int pageNumber, int pageSize);
 
     CarDto findById(UUID id);
 
@@ -21,9 +21,6 @@ public interface CarService {
 
     CarDto update(CarDto carDto, UUID id);
 
-    List<CarDto> findCarsByFilters(String brand, String category, int year, double minPrice, double maxPrice);
-
-    List<CarDto> findCarsWithSort(boolean isASC);
-    void assignCarToShowroom(CarDto carDto, CarShowroom showroom);
+    void assignCarToShowroom(CarShowroomRequest showroom, UUID id);
 
 }

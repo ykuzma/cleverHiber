@@ -11,6 +11,7 @@ import by.kuzma.clever.hiber.repository.ReviewRepository;
 import by.kuzma.clever.hiber.service.ReviewService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -71,35 +72,5 @@ public class ReviewServiceImpl implements ReviewService {
 
         return mapper.toDto(repository.save(review));
     }
-
-    @Override
-    public List<Review> fullTextSearch(String predicate) {
-      /*  Transaction transaction = null;
-        List<Review> result;
-        try {
-            transaction = HibernateUtil.openTransaction();
-            result = getReviews(predicate);
-            transaction.commit();
-        } catch (HibernateException e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw new RuntimeException(e);
-        }
-*/
-        return null;
-    }
-
-/*    private List<Review> getReviews(String predicate) {
-        SearchSession searchSession = Search.session(sessionFactory.getCurrentSession());
-        List<Review> result;
-        result = searchSession.search(Review.class)
-                .where(f -> f.match()
-                        .fields("content")
-                        .matching(predicate))
-                .fetchAllHits();
-        return result;
-    }*/
-
 
 }

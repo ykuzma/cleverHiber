@@ -1,0 +1,270 @@
+databaseChangeLog:
+- changeSet:
+    id: 1733671274107-1
+    author: Юрий (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            name: post_index
+            type: INTEGER
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: car_showroom_pkey
+            name: id
+            type: UUID
+        - column:
+            name: building
+            type: VARCHAR(255)
+        - column:
+            name: house_number
+            type: VARCHAR(255)
+        - column:
+            name: name
+            type: VARCHAR(255)
+        - column:
+            name: room
+            type: VARCHAR(255)
+        - column:
+            name: street
+            type: VARCHAR(255)
+        tableName: car_showroom
+- changeSet:
+    id: 1733671274107-2
+    author: Юрий (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            name: price
+            type: FLOAT8
+        - column:
+            name: year_of_production
+            type: INTEGER
+        - column:
+            name: category_id
+            type: UUID
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: cars_pkey
+            name: id
+            type: UUID
+        - column:
+            name: showroom_id
+            type: UUID
+        - column:
+            name: mark
+            type: VARCHAR(255)
+        - column:
+            name: model
+            type: VARCHAR(255)
+        tableName: cars
+- changeSet:
+    id: 1733671274107-3
+    author: Юрий (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: categories_pkey
+            name: id
+            type: UUID
+        - column:
+            name: name
+            type: VARCHAR(255)
+        tableName: categories
+- changeSet:
+    id: 1733671274107-4
+    author: Юрий (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: client_id
+            type: UUID
+        - column:
+            name: contacts
+            type: VARCHAR(255)
+        tableName: client_contacts
+- changeSet:
+    id: 1733671274107-5
+    author: Юрий (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            name: date_registration
+            type: date
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: clients_pkey
+            name: id
+            type: UUID
+        - column:
+            name: name
+            type: VARCHAR(255)
+        tableName: clients
+- changeSet:
+    id: 1733671274107-6
+    author: Юрий (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: clients_cars_pkey
+            name: car_id
+            type: UUID
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: clients_cars_pkey
+            name: client_id
+            type: UUID
+        tableName: clients_cars
+- changeSet:
+    id: 1733671274107-7
+    author: Юрий (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            name: rank
+            type: FLOAT8
+        - column:
+            name: car_id
+            type: UUID
+        - column:
+            name: client_id
+            type: UUID
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: review_pkey
+            name: id
+            type: UUID
+        - column:
+            name: content
+            type: VARCHAR(255)
+        tableName: review
+- changeSet:
+    id: 1733671274107-8
+    author: Юрий (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: showroom_id
+        baseTableName: cars
+        constraintName: fk1ptomooow06anxyqfikce3c0k
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: car_showroom
+        validate: true
+- changeSet:
+    id: 1733671274107-9
+    author: Юрий (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: category_id
+        baseTableName: cars
+        constraintName: fk310labqcoawyj05t4gvvfjbg9
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: categories
+        validate: true
+- changeSet:
+    id: 1733671274107-10
+    author: Юрий (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: client_id
+        baseTableName: client_contacts
+        constraintName: fk9bsjudxew45qcf8646idcv6f9
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: clients
+        validate: true
+- changeSet:
+    id: 1733671274107-11
+    author: Юрий (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: client_id
+        baseTableName: review
+        constraintName: fkd6xmurqd4be3w7xros5d42l7m
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: clients
+        validate: true
+- changeSet:
+    id: 1733671274107-12
+    author: Юрий (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: car_id
+        baseTableName: review
+        constraintName: fkgg4w8psq13rk2ds98gto53f60
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: cars
+        validate: true
+- changeSet:
+    id: 1733671274107-13
+    author: Юрий (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: car_id
+        baseTableName: clients_cars
+        constraintName: fkitgnt28txljncdrlgminsnnnp
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: cars
+        validate: true
+- changeSet:
+    id: 1733671274107-14
+    author: Юрий (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: client_id
+        baseTableName: clients_cars
+        constraintName: fkowe5i1db3pemlt7438dick0f0
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: clients
+        validate: true
+

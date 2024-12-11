@@ -1,15 +1,11 @@
 package by.kuzma.clever.hiber.repository;
 
 import by.kuzma.clever.hiber.entity.Client;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.UUID;
 
-public interface ClientRepository {
+public interface ClientRepository extends JpaRepository<Client, UUID> {
 
-    Client save(Client client);
-    List<Client> findAll();
-    Client findById(UUID id);
-    void deleteById(UUID id);
-    Client update(Client client);
 }

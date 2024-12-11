@@ -31,21 +31,8 @@ public class CarShowroomServiceImpl implements CarShowroomService {
 
     @Override
     public List<CarShowroomResponse> getShowroomWithAllCars() {
-       /* Transaction transaction = null;
 
-        List<CarShowroom> showrooms;
-        try {
-            transaction = HibernateUtil.openTransaction();
-            showrooms = repository.getShowroomWithAllCars();
-
-            transaction.commit();
-        } catch (HibernateException e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            throw new RuntimeException(e);
-        }*/
-        return null;
+        return mapper.toResponses(repository.findAll());
     }
 
     @Override

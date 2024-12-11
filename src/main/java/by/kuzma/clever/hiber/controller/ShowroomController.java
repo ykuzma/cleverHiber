@@ -28,6 +28,11 @@ public class ShowroomController {
 
     private final CarShowroomService service;
 
+    @GetMapping("/car")
+    public ResponseEntity<List<@Valid CarShowroomResponse>> getShowroomWithAllCars() {
+        return new ResponseEntity<>(service.getShowroomWithAllCars(), HttpStatus.OK);
+    }
+
     @GetMapping("/")
     public ResponseEntity<List<@Valid CarShowroomFindAllResponse>> findAll() {
         return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
